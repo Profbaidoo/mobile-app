@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"> <!-- Root HTML element defaulted to light theme -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="PROF~BAIDOO'S EDU SYSTEM — Professional School Management System for Basic Schools (Kindergarten, Primary & Junior High)">
+    <title>PROF~BAIDOO'S EDU SYSTEM — Basic School Management & Academic Portal</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans, Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Remix Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+
+    <!-- Canvas Confetti for Achievements & Honor Roll -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="SMS.css">
+</head>
+
+<body>
+    <!-- Ambient Background Glow Orbs -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <!-- Toast Notification Center -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- App Shell -->
+    <div class="app-shell">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-crest">
+                    <i class="ri-book-open-fill"></i>
+                </div>
+                <div class="brand-text"> <!-- Container: Sidebar Brand Text Wrapper -->
+                    <h2> <!-- Heading: Brand System Title -->
+                        <span class="brand-title-top">PROF~BAIDOO'S</span> <!-- Title Line 1: Organization Name -->
+                        <span class="brand-title-bottom">EDU SYSTEM <span class="brand-sms-tag"><span
+                                    class="brand-dot">.</span>SMS</span></span>
+                        <!-- Title Line 2: System Designation and Glowing Tag -->
+                    </h2> <!-- End Heading -->
+                    <span class="brand-sub">Basic Academy OS</span> <!-- Subtitle: Operating System Tagline -->
+                </div> <!-- End Brand Text -->
+            </div>
+
+            <nav class="sidebar-menu">
+                <span class="menu-category">Main Menu</span>
+                <button class="nav-link active" data-view="dashboardView" id="navDashboard">
+                    <i class="ri-dashboard-2-line"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-link" data-view="manageMembersView" id="navManageMembers">
+                    <i class="ri-user-settings-fill"></i>
+                    <span>Add & Remove Hub</span>
+                    <span class="nav-badge" style="background:var(--primary);">Manage</span>
+                </button>
+                <button class="nav-link" data-view="studentsView" id="navStudents">
+                    <i class="ri-user-smile-line"></i>
+                    <span>Students</span>
+                    <span class="nav-badge" id="sidebarStudentCount">0</span>
+                </button>
+                <button class="nav-link" data-view="staffView" id="navStaff">
+                    <i class="ri-team-line"></i>
+                    <span>Teachers & Staff</span>
+                </button>
+                <button class="nav-link" data-view="classesView" id="navClasses">
+                    <i class="ri-community-line"></i>
+                    <span>Classes & Grades</span>
+                </button>
+
+                <span class="menu-category">Academic & Records</span>
+                <button class="nav-link" data-view="attendanceView" id="navAttendance">
+                    <i class="ri-calendar-check-line"></i>
+                    <span>Daily Attendance</span>
+                </button>
+                <button class="nav-link" data-view="examsView" id="navExams">
+                    <i class="ri-file-list-3-line"></i>
+                    <span>Exams & Reports</span>
+                </button>
+                <button class="nav-link" data-view="feesView" id="navFees">
+                    <i class="ri-wallet-3-line"></i>
+                    <span>Fees & Billing</span>
+                </button>
+
+                <span class="menu-category">Communications</span>
+                <button class="nav-link" data-view="noticeView" id="navNotice">
+                    <i class="ri-message-3-line"></i>
+                    <span>Parent SMS & Notices</span>
+                </button>
+                <button class="nav-link" data-view="settingsView" id="navSettings">
+                    <i class="ri-settings-4-line"></i>
+                    <span>School Settings</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-card" onclick="SMSAuth.showLoginOverlay()" style="cursor:pointer;"
+                    title="Click to switch user or sign in">
+                    <div class="user-avatar" id="sidebarUserAvatar">PA</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebarUserName">Principal Prof. Baidoo</div>
+                        <div class="user-role">Head Administrator</div>
+                    </div>
+                    <button type="button" class="btn-icon" onclick="event.stopPropagation(); SMSAuth.logout()"
+                        title="Sign Out / Switch Identity"
+                        style="margin-left:auto; width:28px; height:28px; color:#ef4444; background:rgba(239,68,68,0.1); border-radius:6px; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                        <i class="ri-logout-box-r-line"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="main-wrapper">
+
+            <!-- Top Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Sidebar Navigation">
+                        <i class="ri-menu-2-line"></i>
+                    </button>
+                    <!-- Active Term & Academic Session Capsule Pill -->
+                    <div class="term-pill"> <!-- Pill Badge: Active Academic Year and Term Session Status -->
+                        <span class="pulse-dot"></span> <!-- Live Session Status Green Glowing Pulse Indicator -->
+                        <span id="currentTermLabel" class="term-label-content">
+                            <!-- Semantic ID Anchor and Text Wrapper -->
+                            <span class="term-year-val">2026/2027</span> <!-- Academic Calendar Year Value -->
+                            <span class="term-year-title">Academic Year</span>
+                            <!-- Academic Session Title Descriptor -->
+                            <span class="term-sep">•</span> <!-- Visual Bullet Separator -->
+                            <span class="term-name">Term 2</span> <!-- Current School Term Name -->
+                            <span class="term-state-tag">(In Session)</span>
+                            <!-- Active Term Operational State Badge -->
+                        </span> <!-- End Term Label Content -->
+                    </div> <!-- End Term Pill Badge -->
+                </div> <!-- End Header Left Section Wrapper -->
+
+                <div class="header-right">
+                    <!-- Quick Global Search Trigger -->
+                    <div class="search-trigger-box" id="globalSearchTrigger">
+                        <i class="ri-search-2-line"></i>
+                        <span>Search students, staff...</span>
+                        <span class="kbd-shortcut">Ctrl+K</span>
+                    </div>
+
+                    <!-- Quick Action: Manage / Enroll -->
+                    <button class="btn-primary-gradient" id="btnQuickEnroll">
+                        <i class="ri-user-add-line"></i>
+                        <span>Add Member</span>
+                    </button>
+
+                    <!-- Theme Switcher -->
+                    <button class="btn-icon" id="themeToggleBtn" title="Toggle Light / Dark Mode"
+                        aria-label="Toggle Theme">
+                        <i class="ri-sun-line theme-icon-light" style="display:none;"></i>
+                        <!-- Theme Icon: Sun glyph hidden while light theme active -->
+                        <i class="ri-moon-line theme-icon-dark" style="display:inline-block;"></i>
+                        <!-- Theme Icon: Moon glyph visible while light theme active -->
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dynamic Views Container -->
+            <div class="content-area">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <section class="view-panel active" id="dashboardView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-dashboard-2-fill"></i> Executive Overview</h1>
+                            <p>Real-time analytics and operations summary for Prof~Baidoo Basic Academy</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn btn-secondary btn-sm" id="btnRefreshDashboard">
+                                <i class="ri-refresh-line"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Metric Cards Grid -->
+                    <div class="metrics-grid">
+                        <div class="metric-card accent-purple">
+                            <div class="metric-info">
+                                <span class="metric-label">Enrolled Students</span>
+                                <span class="metric-value" id="kpiTotalStudents">0</span>
+                                <span class="metric-sub"><span class="trend-up"><i class="ri-arrow-up-line"></i>
+                                        100%</span> Active across 12 Classes</span>
+                            </div>
+                            <div class="metric-icon-box">
+                                <i class="ri-graduation-cap-line"></i>
+                            </div>
+                        </div>
+
+                        <div class="metric-card accent-emerald">
+                            <div class="metric-info">
+                                <span class="metric-label">Today's Attendance</span>
+                                <span class="metric-value" id="kpiAttendanceRate">0%</span>
+                                <span class="metric-sub" id="kpiAttendanceSub"><span class="trend-up"><i
+                                            class="ri-check-double-line"></i></span> Marked for today</span>
+                            </div>
+                            <div class="metric-icon-box">
+                                <i class="ri-calendar-check-line"></i>
+                            </div>
+                        </div>
+
+                        <div class="metric-card accent-cyan">
+                            <div class="metric-info">
+                                <span class="metric-label">Faculty & Staff</span>
+                                <span class="metric-value" id="kpiTotalStaff">0</span>
+                                <span class="metric-sub">Certified basic educators</span>
+                            </div>
+                            <div class="metric-icon-box">
+                                <i class="ri-user-star-line"></i>
+                            </div>
+                        </div>
+
+                        <div class="metric-card accent-amber">
+                            <div class="metric-info">
+                                <span class="metric-label">Term Fee Collection</span>
+                                <span class="metric-value" id="kpiFeeCollection">GHC 0</span>
+                                <span class="metric-sub" id="kpiFeeRecovery">0% recovery rate</span>
+                            </div>
+                            <div class="metric-icon-box">
+                                <i class="ri-bank-card-line"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Strip -->
+                    <div class="quick-actions-bar">
+                        <div class="quick-action-btn" id="qaAddRemove">
+                            <div class="action-icon icon-rose"><i class="ri-user-settings-line"></i></div>
+                            <div class="action-text">
+                                <span class="action-name">Add & Remove Hub</span>
+                                <span class="action-desc">Enroll students & Hire staff</span>
+                            </div>
+                        </div>
+                        <div class="quick-action-btn" id="qaTakeAttendance">
+                            <div class="action-icon icon-emerald"><i class="ri-checkbox-circle-line"></i></div>
+                            <div class="action-text">
+                                <span class="action-name">Take Attendance</span>
+                                <span class="action-desc">Launch daily roll call</span>
+                            </div>
+                        </div>
+                        <div class="quick-action-btn" id="qaRecordPayment">
+                            <div class="action-icon icon-amber"><i class="ri-hand-coin-line"></i></div>
+                            <div class="action-text">
+                                <span class="action-name">Record Payment</span>
+                                <span class="action-desc">Log fees & issue receipt</span>
+                            </div>
+                        </div>
+                        <div class="quick-action-btn" id="qaEnterScores">
+                            <div class="action-icon icon-blue"><i class="ri-edit-circle-line"></i></div>
+                            <div class="action-text">
+                                <span class="action-name">Gradebook Entry</span>
+                                <span class="action-desc">CA & terminal exam scores</span>
+                            </div>
+                        </div>
+                        <div class="quick-action-btn" id="qaSendSMS">
+                            <div class="action-icon icon-purple"><i class="ri-chat-broadcast-line"></i></div>
+                            <div class="action-text">
+                                <span class="action-name">Broadcast SMS</span>
+                                <span class="action-desc">Send alert to parents</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dashboard Content Multi-column Grid -->
+                    <div class="dashboard-grid">
+                        <!-- Left Column: Class Attendance Progress & Top Performers -->
+                        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="ri-bar-chart-grouped-line"></i> Class Attendance Breakdown
+                                    </div>
+                                    <button class="btn btn-outline btn-sm" id="btnGoToAttendance">Roll Call
+                                        Center</button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="class-attendance-list" id="dashboardAttendanceList">
+                                        <!-- Rendered dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="ri-medal-fill"></i> Honor Roll & Top Performers (Term 2)
+                                    </div>
+                                    <button class="btn btn-outline btn-sm" id="btnCelebrateTop"
+                                        title="Trigger Confetti">
+                                        <i class="ri-sparkling-line"></i> Celebrate
+                                    </button>
+                                </div>
+                                <div class="card-body" style="padding:0;">
+                                    <div class="table-responsive" style="border:none; box-shadow:none;">
+                                        <table class="data-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Student</th>
+                                                    <th>Class</th>
+                                                    <th>Average</th>
+                                                    <th>Grade</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="dashboardHonorRollBody">
+                                                <!-- Dynamic Honor Roll -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Recent Activity Feed & Notices -->
+                        <div style="display:flex; flex-direction:column; gap:1.5rem;">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="ri-notification-3-line"></i> Latest Announcements
+                                    </div>
+                                    <button class="btn btn-outline btn-sm" id="btnPostNoticeQuick">Post</button>
+                                </div>
+                                <div class="card-body" id="dashboardNoticeSnippet">
+                                    <!-- Dynamic Notice -->
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        <i class="ri-history-line"></i> Recent System Activity
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="activity-feed" id="dashboardActivityFeed">
+                                        <!-- Dynamic activity feed -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. ADD & REMOVE MEMBERS HUB VIEW -->
+                <section class="view-panel" id="manageMembersView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-user-settings-fill"></i> Add & Remove Members Hub</h1>
+                            <p>Direct enrollment and removal management for Students, Teachers, and Faculty Staff</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn-admitme-sync" id="btnHubSyncAdmitME"
+                                title="Auto-import approved candidates from AdmitME portal">
+                                <i class="ri-refresh-line"></i> Sync from AdmitME
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sub-view Segmented Tabs -->
+                    <div class="segmented-tabs-bar">
+                        <button class="segmented-tab-btn active" id="tabManageStudents">
+                            <i class="ri-user-smile-line"></i>
+                            <span>Manage Students (Add & Remove)</span>
+                        </button>
+                        <button class="segmented-tab-btn" id="tabManageStaff">
+                            <i class="ri-team-line"></i>
+                            <span>Manage Teachers & Staff (Add & Remove)</span>
+                        </button>
+                    </div>
+
+                    <!-- SUBVIEW A: MANAGE STUDENTS -->
+                    <div id="subViewManageStudents" class="manage-split-grid">
+                        <!-- Left: Quick Add Student Form Card -->
+                        <div class="quick-add-card">
+                            <div class="card-header"
+                                style="padding:0 0 1rem 0; margin-bottom:1rem; border-bottom:1px solid var(--bg-surface-border);">
+                                <div class="card-title"><i class="ri-user-add-fill"
+                                        style="color:var(--primary-light);"></i> Quick Enroll New Student</div>
+                            </div>
+                            <form id="quickAddStudentForm">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">First Name *</label>
+                                        <input type="text" id="qaStudFirstName" class="form-input" required
+                                            placeholder="e.g. Nathaniel">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Last Name *</label>
+                                        <input type="text" id="qaStudLastName" class="form-input" required
+                                            placeholder="e.g. Baidoo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Class / Grade *</label>
+                                        <select id="qaStudClass" class="form-select" required>
+                                            <option value="Nursery 1">Nursery 1</option>
+                                            <option value="Nursery 2">Nursery 2</option>
+                                            <option value="KG 1">KG 1</option>
+                                            <option value="KG 2">KG 2</option>
+                                            <option value="Primary 1" selected>Primary 1</option>
+                                            <option value="Primary 2">Primary 2</option>
+                                            <option value="Primary 3">Primary 3</option>
+                                            <option value="Primary 4">Primary 4</option>
+                                            <option value="Primary 5">Primary 5</option>
+                                            <option value="Primary 6">Primary 6</option>
+                                            <option value="JHS 1">JHS 1</option>
+                                            <option value="JHS 2">JHS 2</option>
+                                            <option value="JHS 3">JHS 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Gender *</label>
+                                        <select id="qaStudGender" class="form-select" required>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Date of Birth</label>
+                                        <input type="date" id="qaStudDOB" class="form-input" value="2018-06-15">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Admission / Roll No</label>
+                                        <input type="text" id="qaStudAdmissionNo" class="form-input"
+                                            placeholder="Auto-generated">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Guardian Name *</label>
+                                        <input type="text" id="qaStudGuardianName" class="form-input" required
+                                            placeholder="e.g. Mrs. Vivian Baidoo">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Guardian Phone *</label>
+                                        <input type="tel" id="qaStudGuardianPhone" class="form-input" required
+                                            placeholder="e.g. +233 24 555 6677">
+                                    </div>
+                                    <div class="form-group form-group-full">
+                                        <label class="form-label">Medical Notes / Allergies</label>
+                                        <input type="text" id="qaStudMedical" class="form-input"
+                                            placeholder="None (Healthy)">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary-gradient"
+                                    style="width:100%; margin-top:1.25rem;">
+                                    <i class="ri-user-add-line"></i> Enroll Student Immediately
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Right: Quick Remove / Search Students List -->
+                        <div class="quick-remove-card">
+                            <div class="card-header"
+                                style="padding:0 0 1rem 0; margin-bottom:1rem; border-bottom:1px solid var(--bg-surface-border);">
+                                <div class="card-title"><i class="ri-user-unfollow-line"
+                                        style="color:var(--danger);"></i> Remove Students Registry</div>
+                            </div>
+
+                            <div class="filter-bar" style="padding:0.75rem; margin-bottom:0.75rem;">
+                                <div class="filter-input-wrap">
+                                    <i class="ri-search-line"></i>
+                                    <input type="text" id="hubStudentSearch" class="filter-input"
+                                        placeholder="Search student to remove...">
+                                </div>
+                                <select id="hubStudentClassFilter" class="filter-select">
+                                    <option value="ALL">All Classes</option>
+                                    <option value="Nursery 1">Nursery 1</option>
+                                    <option value="Nursery 2">Nursery 2</option>
+                                    <option value="KG 1">KG 1</option>
+                                    <option value="KG 2">KG 2</option>
+                                    <option value="Primary 1">Primary 1</option>
+                                    <option value="Primary 2">Primary 2</option>
+                                    <option value="Primary 3">Primary 3</option>
+                                    <option value="Primary 4">Primary 4</option>
+                                    <option value="Primary 5">Primary 5</option>
+                                    <option value="Primary 6">Primary 6</option>
+                                    <option value="JHS 1">JHS 1</option>
+                                    <option value="JHS 2">JHS 2</option>
+                                    <option value="JHS 3">JHS 3</option>
+                                </select>
+                            </div>
+
+                            <!-- Batch Toolbar -->
+                            <div id="hubStudentBatchBar" class="batch-action-bar">
+                                <div class="batch-info">
+                                    <i class="ri-checkbox-circle-fill"></i>
+                                    <span id="hubStudentBatchCount">0 students selected</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm" id="btnHubBatchDeleteStudents">
+                                    <i class="ri-delete-bin-2-line"></i> Delete Selected
+                                </button>
+                            </div>
+
+                            <div class="table-responsive" style="max-height: 480px;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:36px;"><input type="checkbox" id="hubStudentSelectAll"
+                                                    class="tbl-checkbox"></th>
+                                            <th>Student</th>
+                                            <th>Class</th>
+                                            <th>Guardian Phone</th>
+                                            <th style="text-align:right;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="hubStudentsTableBody">
+                                        <!-- Rendered dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBVIEW B: MANAGE TEACHERS & STAFF -->
+                    <div id="subViewManageStaff" class="manage-split-grid" style="display:none;">
+                        <!-- Left: Quick Add Teacher Form Card -->
+                        <div class="quick-add-card">
+                            <div class="card-header"
+                                style="padding:0 0 1rem 0; margin-bottom:1rem; border-bottom:1px solid var(--bg-surface-border);">
+                                <div class="card-title"><i class="ri-user-star-fill"
+                                        style="color:var(--accent-cyan);"></i> Quick Onboard New Teacher</div>
+                            </div>
+                            <form id="quickAddStaffForm">
+                                <div class="form-grid">
+                                    <div class="form-group form-group-full">
+                                        <label class="form-label">Full Name *</label>
+                                        <input type="text" id="qaStaffName" class="form-input" required
+                                            placeholder="e.g. Mr. Isaac Junior Donkor">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Designation / Role *</label>
+                                        <input type="text" id="qaStaffRole" class="form-input" required
+                                            placeholder="e.g. JHS ICT Specialist">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Class In-Charge</label>
+                                        <select id="qaStaffAssignedClass" class="form-select">
+                                            <option value="None">None (Subject Specialist)</option>
+                                            <option value="Nursery 1">Nursery 1</option>
+                                            <option value="Nursery 2">Nursery 2</option>
+                                            <option value="KG 1">KG 1</option>
+                                            <option value="KG 2">KG 2</option>
+                                            <option value="Primary 1">Primary 1</option>
+                                            <option value="Primary 2">Primary 2</option>
+                                            <option value="Primary 3">Primary 3</option>
+                                            <option value="Primary 4">Primary 4</option>
+                                            <option value="Primary 5">Primary 5</option>
+                                            <option value="Primary 6">Primary 6</option>
+                                            <option value="JHS 1">JHS 1</option>
+                                            <option value="JHS 2">JHS 2</option>
+                                            <option value="JHS 3">JHS 3</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group form-group-full">
+                                        <label class="form-label">Subjects Taught</label>
+                                        <input type="text" id="qaStaffSubjects" class="form-input"
+                                            placeholder="e.g. Computing / ICT, Mathematics">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Phone Number *</label>
+                                        <input type="tel" id="qaStaffPhone" class="form-input" required
+                                            placeholder="e.g. +233 20 888 9900">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" id="qaStaffEmail" class="form-input"
+                                            placeholder="e.g. j.Junior Donkor@profbaidooeducomplex.edu">
+                                    </div>
+                                    <div class="form-group form-group-full">
+                                        <label class="form-label">Qualification / Degree</label>
+                                        <input type="text" id="qaStaffDegree" class="form-input"
+                                            placeholder="e.g. B.Sc in Computer Science Education">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary-gradient"
+                                    style="width:100%; margin-top:1.25rem;">
+                                    <i class="ri-user-star-line"></i> Onboard Teacher to Faculty
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Right: Quick Remove / Search Teachers List -->
+                        <div class="quick-remove-card">
+                            <div class="card-header"
+                                style="padding:0 0 1rem 0; margin-bottom:1rem; border-bottom:1px solid var(--bg-surface-border);">
+                                <div class="card-title"><i class="ri-user-unfollow-line"
+                                        style="color:var(--danger);"></i> Remove Faculty Staff</div>
+                            </div>
+
+                            <div class="filter-bar" style="padding:0.75rem; margin-bottom:0.75rem;">
+                                <div class="filter-input-wrap">
+                                    <i class="ri-search-line"></i>
+                                    <input type="text" id="hubStaffSearch" class="filter-input"
+                                        placeholder="Search teacher to remove...">
+                                </div>
+                            </div>
+
+                            <!-- Batch Toolbar -->
+                            <div id="hubStaffBatchBar" class="batch-action-bar">
+                                <div class="batch-info">
+                                    <i class="ri-checkbox-circle-fill"></i>
+                                    <span id="hubStaffBatchCount">0 teachers selected</span>
+                                </div>
+                                <button class="btn btn-danger btn-sm" id="btnHubBatchDeleteStaff">
+                                    <i class="ri-delete-bin-2-line"></i> Remove Selected
+                                </button>
+                            </div>
+
+                            <div class="table-responsive" style="max-height: 480px;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:36px;"><input type="checkbox" id="hubStaffSelectAll"
+                                                    class="tbl-checkbox"></th>
+                                            <th>Teacher Name</th>
+                                            <th>Role / Class</th>
+                                            <th>Phone Contact</th>
+                                            <th style="text-align:right;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="hubStaffTableBody">
+                                        <!-- Rendered dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. STUDENTS DIRECTORY VIEW -->
+                <section class="view-panel" id="studentsView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-user-smile-fill"></i> Student Registry & Profiles</h1>
+                            <p>Manage all registered students across Kindergarten, Primary, and Junior High</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn-admitme-sync" id="btnSyncAdmitME"
+                                title="Auto-import approved candidates from AdmitME portal">
+                                <i class="ri-refresh-line"></i> Sync from AdmitME
+                            </button>
+                            <button class="btn btn-secondary" id="btnExportStudentsCSV">
+                                <i class="ri-download-2-line"></i> Export CSV
+                            </button>
+                            <button class="btn-primary-gradient" id="btnAddStudent">
+                                <i class="ri-user-add-line"></i> Add New Student
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-group-left">
+                            <div class="filter-input-wrap">
+                                <i class="ri-search-line"></i>
+                                <input type="text" id="studentSearchInput" class="filter-input"
+                                    placeholder="Search by name, admission no, or guardian...">
+                            </div>
+                            <select id="studentClassFilter" class="filter-select">
+                                <option value="ALL">All Classes</option>
+                                <option value="Nursery 1">Nursery 1</option>
+                                <option value="Nursery 2">Nursery 2</option>
+                                <option value="KG 1">KG 1</option>
+                                <option value="KG 2">KG 2</option>
+                                <option value="Primary 1">Primary 1</option>
+                                <option value="Primary 2">Primary 2</option>
+                                <option value="Primary 3">Primary 3</option>
+                                <option value="Primary 4">Primary 4</option>
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="JHS 1">JHS 1</option>
+                                <option value="JHS 2">JHS 2</option>
+                                <option value="JHS 3">JHS 3</option>
+                            </select>
+                            <select id="studentGenderFilter" class="filter-select">
+                                <option value="ALL">All Genders</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                            <select id="studentFeeFilter" class="filter-select">
+                                <option value="ALL">All Fee Status</option>
+                                <option value="Paid">Fully Paid</option>
+                                <option value="Partial">Partial</option>
+                                <option value="Overdue">Overdue Arrears</option>
+                            </select>
+                        </div>
+                        <div id="studentTableCountBadge" class="badge badge-info">Showing 0 students</div>
+                    </div>
+
+                    <!-- Batch Action Bar on Main Student Table -->
+                    <div id="mainStudentBatchBar" class="batch-action-bar">
+                        <div class="batch-info">
+                            <i class="ri-checkbox-circle-fill"></i>
+                            <span id="mainStudentBatchCount">0 students selected</span>
+                        </div>
+                        <button class="btn btn-danger btn-sm" id="btnMainBatchDeleteStudents">
+                            <i class="ri-delete-bin-2-line"></i> Delete Selected
+                        </button>
+                    </div>
+
+                    <!-- Students Table -->
+                    <div class="table-responsive">
+                        <table class="data-table" id="studentsTable">
+                            <thead>
+                                <tr>
+                                    <th style="width:36px;"><input type="checkbox" id="mainStudentSelectAll"
+                                            class="tbl-checkbox"></th>
+                                    <th>Student</th>
+                                    <th>Admission No</th>
+                                    <th>Class / Grade</th>
+                                    <th>Gender / Age</th>
+                                    <th>Guardian Contact</th>
+                                    <th>Fee Status</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 4. TEACHERS & STAFF VIEW -->
+                <section class="view-panel" id="staffView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-team-fill"></i> Faculty & Staff Management</h1>
+                            <p>Class teachers, subject teachers, and administrative personnel</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn-primary-gradient" id="btnAddStaff">
+                                <i class="ri-user-add-line"></i> Add New Teacher
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table" id="staffTable">
+                            <thead>
+                                <tr>
+                                    <th>Staff Member</th>
+                                    <th>Role / Designation</th>
+                                    <th>Class In-Charge</th>
+                                    <th>Subjects Taught</th>
+                                    <th>Phone / Email</th>
+                                    <th>Qualification</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffTableBody">
+                                <!-- Dynamic staff rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 5. CLASSES & GRADES VIEW -->
+                <section class="view-panel" id="classesView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-community-fill"></i> Classes & Sections</h1>
+                            <p>Overview of classroom structures, enrolled counts, and assigned class masters</p>
+                        </div>
+                    </div>
+
+                    <!-- Classes Segmented Tabs -->
+                    <div class="segmented-tabs-bar" style="margin-bottom:1.25rem;">
+                        <button class="segmented-tab-btn active" id="tabClassesRoster">
+                            <i class="ri-community-line"></i>
+                            <span>Classroom Rosters & Capacity</span>
+                        </button>
+                        <button class="segmented-tab-btn" id="tabClassesTimetable">
+                            <i class="ri-calendar-todo-line"></i>
+                            <span>Weekly Class Timetable & Schedule Matrix</span>
+                        </button>
+                    </div>
+
+                    <!-- Subview 1: Classes Grid -->
+                    <div id="subViewClassesGrid">
+                        <div class="classes-grid" id="classesGridContainer">
+                            <!-- Dynamic class cards -->
+                        </div>
+                    </div>
+
+                    <!-- Subview 2: Class Timetable & Schedule Matrix -->
+                    <div id="subViewClassesTimetable" style="display:none;">
+                        <div class="timetable-card">
+                            <div class="timetable-header-bar">
+                                <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+                                    <label class="form-label" style="margin:0; font-weight:700;"><i
+                                            class="ri-book-2-line"></i> Select Class Schedule:</label>
+                                    <select id="timetableClassSelect" class="filter-select">
+                                        <option value="Primary 1" selected>Primary 1</option>
+                                        <option value="Nursery 1">Nursery 1</option>
+                                        <option value="Nursery 2">Nursery 2</option>
+                                        <option value="KG 1">KG 1</option>
+                                        <option value="KG 2">KG 2</option>
+                                        <option value="Primary 2">Primary 2</option>
+                                        <option value="Primary 3">Primary 3</option>
+                                        <option value="Primary 4">Primary 4</option>
+                                        <option value="Primary 5">Primary 5</option>
+                                        <option value="Primary 6">Primary 6</option>
+                                        <option value="JHS 1">JHS 1</option>
+                                        <option value="JHS 2">JHS 2</option>
+                                        <option value="JHS 3">JHS 3</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <button class="btn btn-secondary btn-sm" onclick="window.print()">
+                                        <i class="ri-printer-line"></i> Print Schedule
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="timetable-table" id="masterTimetableTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Time / Period</th>
+                                            <th>Monday</th>
+                                            <th>Tuesday</th>
+                                            <th>Wednesday</th>
+                                            <th>Thursday</th>
+                                            <th>Friday</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="timetableGridBody">
+                                        <!-- Dynamic timetable slots -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. DAILY ATTENDANCE ROLL CALL VIEW -->
+                <section class="view-panel" id="attendanceView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-calendar-check-fill"></i> Daily Attendance Roll Call</h1>
+                            <p>Mark daily class attendance with 1-click status toggles</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn btn-secondary" id="btnPrintAttendanceRegister">
+                                <i class="ri-printer-line"></i> Print Class Register
+                            </button>
+                            <button class="btn btn-success" id="btnSaveAttendance">
+                                <i class="ri-save-line"></i> Save Attendance Log
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Roll Call Control Header -->
+                    <div class="roll-call-header">
+                        <div class="roll-call-controls">
+                            <label class="form-label" style="margin:0;">Select Class:</label>
+                            <select id="attClassSelect" class="filter-select">
+                                <option value="Primary 1">Primary 1</option>
+                                <option value="Nursery 1">Nursery 1</option>
+                                <option value="Nursery 2">Nursery 2</option>
+                                <option value="KG 1">KG 1</option>
+                                <option value="KG 2">KG 2</option>
+                                <option value="Primary 2">Primary 2</option>
+                                <option value="Primary 3">Primary 3</option>
+                                <option value="Primary 4">Primary 4</option>
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="JHS 1">JHS 1</option>
+                                <option value="JHS 2">JHS 2</option>
+                                <option value="JHS 3">JHS 3</option>
+                            </select>
+
+                            <label class="form-label" style="margin:0;">Date:</label>
+                            <input type="date" id="attDateSelect" class="filter-input" style="max-width: 160px;">
+
+                            <button class="btn btn-secondary btn-sm" id="btnMarkAllPresent">
+                                <i class="ri-check-double-line"></i> Mark All Present
+                            </button>
+                        </div>
+
+                        <div class="attendance-stats-summary" id="attendanceStatsSummary">
+                            <div class="att-stat-badge"><i class="ri-user-line"></i> Total: <span
+                                    id="attStatTotal">0</span></div>
+                            <div class="att-stat-badge" style="color:#10b981;"><i class="ri-checkbox-circle-fill"></i>
+                                Present: <span id="attStatPresent">0</span></div>
+                            <div class="att-stat-badge" style="color:#f59e0b;"><i class="ri-time-fill"></i> Late: <span
+                                    id="attStatLate">0</span></div>
+                            <div class="att-stat-badge" style="color:#ef4444;"><i class="ri-close-circle-fill"></i>
+                                Absent: <span id="attStatAbsent">0</span></div>
+                            <div class="att-stat-badge" style="color:#6366f1;"><i class="ri-file-info-fill"></i>
+                                Excused: <span id="attStatExcused">0</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Roll Call Table -->
+                    <div class="table-responsive">
+                        <table class="data-table" id="attendanceTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Student</th>
+                                    <th>Admission No</th>
+                                    <th>Gender</th>
+                                    <th>Status (P / L / A / E)</th>
+                                    <th>Teacher's Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                <!-- Dynamic attendance rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 7. EXAMS & REPORT CARDS VIEW -->
+                <section class="view-panel" id="examsView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-file-list-3-fill"></i> Academic Gradebook & Terminal Reports</h1>
+                            <p>Record Continuous Assessment (50%) + Exam (50%) and generate official Report Cards</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn btn-secondary" id="btnSaveGradebook">
+                                <i class="ri-save-line"></i> Save Grades
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Gradebook Selector Bar -->
+                    <div class="filter-bar">
+                        <div class="filter-group-left">
+                            <select id="examClassSelect" class="filter-select">
+                                <option value="Primary 1">Primary 1</option>
+                                <option value="Nursery 1">Nursery 1</option>
+                                <option value="Nursery 2">Nursery 2</option>
+                                <option value="KG 1">KG 1</option>
+                                <option value="KG 2">KG 2</option>
+                                <option value="Primary 2">Primary 2</option>
+                                <option value="Primary 3">Primary 3</option>
+                                <option value="Primary 4">Primary 4</option>
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="JHS 1">JHS 1</option>
+                                <option value="JHS 2">JHS 2</option>
+                                <option value="JHS 3">JHS 3</option>
+                            </select>
+
+                            <select id="examSubjectSelect" class="filter-select">
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="English Language">English Language</option>
+                                <option value="Integrated Science">Integrated Science</option>
+                                <option value="Social Studies">Social Studies</option>
+                                <option value="ICT / Computing">ICT / Computing</option>
+                                <option value="Creative Arts">Creative Arts</option>
+                                <option value="Religious & Moral Education">Religious & Moral Education</option>
+                                <option value="Ghanaian Language / French">Ghanaian Language / French</option>
+                            </select>
+
+                            <select id="examTermSelect" class="filter-select">
+                                <option value="Term 2">Term 2 (Current)</option>
+                                <option value="Term 1">Term 1</option>
+                                <option value="Term 3">Term 3</option>
+                            </select>
+                        </div>
+                        <div class="badge badge-purple">Grading: 50% Class Score + 50% Terminal Exam</div>
+                    </div>
+
+                    <!-- Gradebook Table -->
+                    <div class="table-responsive">
+                        <table class="data-table" id="examsTable">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Admission No</th>
+                                    <th>Class Score (50%)</th>
+                                    <th>Exam Score (50%)</th>
+                                    <th>Total Score (100%)</th>
+                                    <th>Grade</th>
+                                    <th>Remarks</th>
+                                    <th style="text-align: right;">Report Card</th>
+                                </tr>
+                            </thead>
+                            <tbody id="examsTableBody">
+                                <!-- Dynamic grade rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 8. FEES & BILLING VIEW -->
+                <section class="view-panel" id="feesView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-wallet-3-fill"></i> Fee Management & Billing</h1>
+                            <p>Track school fees, PTA dues, transport, feeding payments and issue official receipts</p>
+                        </div>
+                        <div class="view-actions">
+                            <button class="btn btn-secondary" id="btnExportFeesCSV">
+                                <i class="ri-download-2-line"></i> Export Ledger
+                            </button>
+                            <button class="btn-primary-gradient" id="btnRecordPaymentModal">
+                                <i class="ri-hand-coin-line"></i> Record New Payment
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Financial Status KPI Cards -->
+                    <div class="metrics-grid">
+                        <div class="metric-card accent-purple">
+                            <div class="metric-info">
+                                <span class="metric-label">Total Billed Fees</span>
+                                <span class="metric-value" id="feeStatTotalBilled">$0</span>
+                                <span class="metric-sub">Term 2 Total Invoiced</span>
+                            </div>
+                            <div class="metric-icon-box"><i class="ri-file-paper-2-line"></i></div>
+                        </div>
+
+                        <div class="metric-card accent-emerald">
+                            <div class="metric-info">
+                                <span class="metric-label">Total Amount Collected</span>
+                                <span class="metric-value" id="feeStatTotalCollected">GHC 0</span>
+                                <span class="metric-sub" id="feeStatCollectionRate">0% collected</span>
+                            </div>
+                            <div class="metric-icon-box"><i class="ri-checkbox-circle-line"></i></div>
+                        </div>
+
+                        <div class="metric-card accent-amber">
+                            <div class="metric-info">
+                                <span class="metric-label">Outstanding Arrears</span>
+                                <span class="metric-value" id="feeStatOutstanding">GHC 0</span>
+                                <span class="metric-sub" id="feeStatDebtorCount">0 students with balance</span>
+                            </div>
+                            <div class="metric-icon-box"><i class="ri-alert-line"></i></div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Filters -->
+                    <div class="filter-bar">
+                        <div class="filter-group-left">
+                            <div class="filter-input-wrap">
+                                <i class="ri-search-line"></i>
+                                <input type="text" id="feeSearchInput" class="filter-input"
+                                    placeholder="Search by student or receipt...">
+                            </div>
+                            <select id="feeStatusFilter" class="filter-select">
+                                <option value="ALL">All Payment Statuses</option>
+                                <option value="Paid">Fully Paid (Clear)</option>
+                                <option value="Partial">Partial Payment</option>
+                                <option value="Overdue">Overdue Arrears</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Fee Accounts Table -->
+                    <div class="table-responsive">
+                        <table class="data-table" id="feesTable">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Admission No</th>
+                                    <th>Class</th>
+                                    <th>Total Bill</th>
+                                    <th>Amount Paid</th>
+                                    <th>Balance Due</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feesTableBody">
+                                <!-- Dynamic fee rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 9. PARENT SMS & NOTICES VIEW -->
+                <section class="view-panel" id="noticeView"> <!-- Notice and Messaging View Panel -->
+                    <div class="view-header"> <!-- Header Container -->
+                        <div class="view-title-group"> <!-- Title and Subtitle Group -->
+                            <h1><i class="ri-message-3-fill"></i> Parent SMS Broadcast & Notice Board</h1>
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Main Title -->
+                            <p>Send instant SMS notifications to parents and publish public school notices</p>
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Subtitle Description -->
+                        </div> <!-- End view-title-group -->
+                    </div> <!-- End view-header -->
+                    <!-- Section Visual Spacing Divider -->
+                    <!-- API Metrics Strip: Key, Outbound and Inbound metrics -->
+                    <div class="metrics-grid" style="margin-bottom: 1.5rem;"> <!-- KPI grid container -->
+                        <div class="metric-card"> <!-- Metric Card 1: Active Gateway API Key -->
+                            <div class="metric-header"> <!-- Metric Header -->
+                                <span class="metric-title">Messaging API Key</span> <!-- Title -->
+                                <div class="metric-icon" style="background: rgba(99, 102, 241, 0.12); color: #6366f1;">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Icon background -->
+                                    <i class="ri-key-2-fill"></i> <!-- Key Icon -->
+                                </div> <!-- End metric icon -->
+                            </div> <!-- End metric header -->
+                            <div class="metric-value" id="kpiNoticeActiveKeyPill" <!-- Element Attribute / Content Line
+                                -->
+                                style="font-size: 1.05rem; font-family: var(--font-mono); font-weight: 700; color:
+                                #4338ca;"> <!-- Element Attribute / Content Line -->
+                                pb_live_sec_7f9a...</div> <!-- Key value pill -->
+                            <div class="metric-subtitle"> <!-- Subtitle badge -->
+                                <span class="badge badge-success" style="font-size: 0.72rem;"><i <!-- Element Attribute
+                                        / Content Line -->
+                                        class="ri-shield-check-fill"></i> CSPRNG Active</span> <!-- Status badge -->
+                            </div> <!-- End metric subtitle -->
+                        </div> <!-- End metric card 1 -->
+                        <div class="metric-card"> <!-- Metric Card 2: Cumulative Dispatches -->
+                            <div class="metric-header"> <!-- Metric Header -->
+                                <span class="metric-title">Announcements Dispatched</span> <!-- Title -->
+                                <div class="metric-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Icon background -->
+                                    <i class="ri-broadcast-fill"></i> <!-- Broadcast Icon -->
+                                </div> <!-- End metric icon -->
+                            </div> <!-- End metric header -->
+                            <div class="metric-value" id="kpiNoticeDispatchedCount" style="color: #047857;">0</div>
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Dispatched count -->
+                            <div class="metric-subtitle"> <!-- Subtitle badge -->
+                                <span class="badge badge-info" style="font-size: 0.72rem;"><i <!-- Element Attribute /
+                                        Content Line -->
+                                        class="ri-send-plane-line"></i> Outbound Webhook</span> <!-- Status badge -->
+                            </div> <!-- End metric subtitle -->
+                        </div> <!-- End metric card 2 -->
+                        <div class="metric-card"> <!-- Metric Card 3: Inbound Verified Replies -->
+                            <div class="metric-header"> <!-- Metric Header -->
+                                <span class="metric-title">Inbound Replies Received</span> <!-- Title -->
+                                <div class="metric-icon" style="background: rgba(2, 132, 199, 0.12); color: #0284c7;">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Icon background -->
+                                    <i class="ri-mail-download-fill"></i> <!-- Mail download icon -->
+                                </div> <!-- End metric icon -->
+                            </div> <!-- End metric header -->
+                            <div class="metric-value" id="kpiNoticeReceivedCount" style="color: #0369a1;">0</div>
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Inbound count -->
+                            <div class="metric-subtitle"> <!-- Subtitle badge -->
+                                <span class="badge badge-primary" style="font-size: 0.72rem;"><i <!-- Element Attribute
+                                        / Content Line -->
+                                        class="ri-reply-all-line"></i> Two-Way Ingest</span> <!-- Status badge -->
+                            </div> <!-- End metric subtitle -->
+                        </div> <!-- End metric card 3 -->
+                        <div class="metric-card"> <!-- Metric Card 4: Webhook Security Status -->
+                            <div class="metric-header"> <!-- Metric Header -->
+                                <span class="metric-title">API Authentication</span> <!-- Title -->
+                                <div class="metric-icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Icon background -->
+                                    <i class="ri-lock-password-fill"></i> <!-- Lock icon -->
+                                </div> <!-- End metric icon -->
+                            </div> <!-- End metric header -->
+                            <div class="metric-value" style="font-size: 1.15rem; color: #b45309;">200 OK Active</div>
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Auth value -->
+                            <div class="metric-subtitle"> <!-- Subtitle badge -->
+                                <span class="badge badge-warning" style="font-size: 0.72rem;"><i <!-- Element Attribute
+                                        / Content Line -->
+                                        class="ri-fingerprint-line"></i> Bearer / X-API-Key</span>
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Security badge -->
+                            </div> <!-- End metric subtitle -->
+                        </div> <!-- End metric card 4 -->
+                    </div> <!-- End of metrics-grid -->
+                    <!-- Section Visual Spacing Divider -->
+                    <div class="sms-broadcast-layout"> <!-- Two-column SMS broadcast layout -->
+                        <!-- Left: SMS Dispatch Center -->
+                        <div class="card"> <!-- Broadcast composer card -->
+                            <div class="card-header"> <!-- Composer card header -->
+                                <div class="card-title"><i class="ri-send-plane-fill"></i> SMS Broadcast Dispatcher
+                                    <!-- Element Attribute / Content Line -->
+                                </div> <!-- Card title -->
+                                <div class="badge badge-success" id="smsCreditsBadge">Credits: 2,450 SMS</div>
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Credits badge -->
+                            </div> <!-- End card header -->
+                            <div class="card-body"> <!-- Composer card body -->
+                                <form id="smsBroadcastForm"> <!-- Broadcast submission form -->
+                                    <div class="form-group" style="margin-bottom: 1rem;">
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Group: Recipient Audience -->
+                                        <label class="form-label">Recipient Group:</label> <!-- Recipient label -->
+                                        <select id="smsRecipientGroup" class="form-select">
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Recipient selector dropdown -->
+                                            <option value="ALL">All Parents / Guardians (Entire School)</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- All parents -->
+                                            <option value="DEBTORS">Parents with Outstanding Fee Arrears Only</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Debtors only -->
+                                            <option value="Primary 1">Primary 1 Parents</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Class primary 1 -->
+                                            <option value="Primary 2">Primary 2 Parents</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Class primary 2 -->
+                                            <option value="Primary 3">Primary 3 Parents</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Class primary 3 -->
+                                            <option value="Primary 4">Primary 4 Parents</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Class primary 4 -->
+                                            <option value="Primary 5">Primary 5 Parents</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Class primary 5 -->
+                                            <option value="Primary 6">Primary 6 Parents</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Class primary 6 -->
+                                            <option value="JHS 1">JHS 1 Parents</option> <!-- Class JHS 1 -->
+                                            <option value="JHS 2">JHS 2 Parents</option> <!-- Class JHS 2 -->
+                                            <option value="JHS 3">JHS 3 Parents</option> <!-- Class JHS 3 -->
+                                        </select> <!-- End recipient selector -->
+                                    </div> <!-- End group -->
+                                    <div class="form-group" style="margin-bottom: 1rem;">
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Group: Template Preset -->
+                                        <label class="form-label">Quick Template Preset:</label> <!-- Template label -->
+                                        <select id="smsTemplateSelect" class="form-select">
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Template selector dropdown -->
+                                            <option value="CUSTOM">-- Custom Message --</option> <!-- Custom option -->
+                                            <option value="FEE_REMINDER">Fee Arrears Gentle Reminder</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Fee arrears template -->
+                                            <option value="PTA_MEETING">PTA General Meeting Announcement</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- PTA template -->
+                                            <option value="MID_TERM_BREAK">Mid-Term Vacation Notice</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Mid term template -->
+                                            <option value="EXAM_COMMENCEMENT">Terminal Exams Commencement</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Exam template -->
+                                            <option value="EMERGENCY_WEATHER">Emergency Early Dismissal</option>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Emergency template -->
+                                        </select> <!-- End template selector -->
+                                    </div> <!-- End group -->
+                                    <div class="form-group" style="margin-bottom: 1rem;">
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Group: Message Composer -->
+                                        <label class="form-label">Message Content:</label> <!-- Composer label -->
+                                        <textarea id="smsMessageContent" class="form-textarea" rows="5" <!-- Textarea
+                                            Tag -->
+                                            <!-- Announcement composer textarea -->
+                                            placeholder="Type your announcement to parents here... (Supports tags: {guardian_name}, {student_name}, {fee_balance})"></textarea>
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Textarea placeholder -->
+                                        <div class="sms-meta-info"> <!-- SMS metadata summary -->
+                                            <span>Character count: <strong id="smsCharCount">0</strong> / 160 (1
+                                                <!-- Element Attribute / Content Line -->
+                                                Page)</span> <!-- Character count counter -->
+                                            <span id="smsEstimatedRecipients">Est. Recipients: ~24</span>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Estimated recipients count -->
+                                        </div> <!-- End sms-meta-info -->
+                                    </div> <!-- End group -->
+                                    <button type="submit" class="btn-primary-gradient" style="width: 100%;">
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Submit button -->
+                                        <i class="ri-broadcast-line"></i> Send SMS Broadcast Now <!-- Submit text -->
+                                    </button> <!-- End submit button -->
+                                </form> <!-- End smsBroadcastForm -->
+                            </div> <!-- End card body -->
+                        </div> <!-- End card -->
+                        <!-- Right: Live SMS Preview Mockup -->
+                        <div class="card"> <!-- Phone simulator card -->
+                            <div class="card-header"> <!-- Phone card header -->
+                                <div class="card-title"><i class="ri-smartphone-line"></i> Live Phone Simulator</div>
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Simulator title -->
+                            </div> <!-- End card header -->
+                            <div class="card-body" style="display:flex; justify-content:center; align-items:center;">
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Center alignment container -->
+                                <div class="phone-mockup"> <!-- Phone chassis container -->
+                                    <div class="phone-screen"> <!-- Phone glass screen -->
+                                        <div class="phone-header"> <!-- Mobile screen header bar -->
+                                            <i class="ri-shield-check-fill" style="color:#3b82f6;"></i>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Verification icon -->
+                                            <span>PROF~BAIDOO (Sender ID)</span> <!-- Verified sender ID title -->
+                                        </div> <!-- End phone-header -->
+                                        <div class="phone-bubble" id="phonePreviewBubble">
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Inbound SMS message bubble -->
+                                            Dear Parent, this is an official message from Prof~Baidoo Basic Academy.
+                                            <!-- Element Attribute / Content Line -->
+                                            Please take note of our upcoming school activities.
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Default bubble content -->
+                                        </div> <!-- End phone-bubble -->
+                                        <span <!-- Element Attribute / Content Line -->
+                                            style="font-size: 0.65rem; color: #64748b; margin-top: 4px; text-align:
+                                            right;">Delivered <!-- Element Attribute / Content Line -->
+                                            just now</span> <!-- Delivery status -->
+                                    </div> <!-- End phone-screen -->
+                                </div> <!-- End phone-mockup -->
+                            </div> <!-- End card-body -->
+                        </div> <!-- End phone simulator card -->
+                    </div> <!-- End of sms-broadcast-layout -->
+                    <!-- Section Visual Spacing Divider -->
+                    <!-- Two-Way Messaging API Key & Webhook Gateway Hub Card -->
+                    <div class="card" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+                        <!-- Element Attribute / Content Line -->
+                        <!-- API Hub Card Container -->
+                        <div class="card-header"> <!-- Card Header -->
+                            <div class="card-title"> <!-- Card Title -->
+                                <i class="ri-key-2-fill"></i> Institutional Messaging API Key & Two-Way Webhook Gateway
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Title text with icon -->
+                            </div> <!-- End card title -->
+                            <div class="badge badge-primary" style="font-size: 0.75rem;"> <!-- Security Badge -->
+                                <i class="ri-shield-keyhole-line"></i> Bearer & X-API-Key Authentication
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Auth standard text -->
+                            </div> <!-- End security badge -->
+                        </div> <!-- End card header -->
+                        <div class="card-body"> <!-- Card Body -->
+                            <p <!-- Element Attribute / Content Line -->
+                                style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size: 0.9rem;
+                                line-height: 1.5;"> <!-- Element Attribute / Content Line -->
+                                <!-- Explanatory description -->
+                                This cryptographically generated API key authorizes both <strong>outbound
+                                    <!-- Element Attribute / Content Line -->
+                                    announcements</strong> (dispatched to external SMS gateways, WhatsApp bots, and
+                                <!-- Element Attribute / Content Line -->
+                                notification relays) and <strong>inbound two-way message webhooks</strong> (allowing
+                                <!-- Element Attribute / Content Line -->
+                                parents and external responders to reply back directly into the School Portal).
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Full description text -->
+                            </p> <!-- End explanatory description -->
+                            <div class="form-group" style="margin-bottom: 1.5rem;"> <!-- Form Group: API Key Display -->
+                                <label class="form-label" style="font-weight: 700; color: var(--text-primary);">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Label -->
+                                    <i class="ri-lock-2-line"></i> Active High-Entropy Secret Messaging API Key (Bearer
+                                    <!-- Element Attribute / Content Line -->
+                                    Token): <!-- Label text -->
+                                </label> <!-- End label -->
+                                <div class="api-key-container"> <!-- API key flex container -->
+                                    <input type="text" id="apiKeyDisplayInput" class="form-input api-key-field" readonly
+                                        <!-- Element Attribute / Content Line -->
+                                    <!-- API key input field -->
+                                    value="pb_live_sec_••••••••••••••••••••••••••••••••••••••••"
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Initial placeholder value -->
+                                    style="font-family: var(--font-mono); font-size: 0.88rem; font-weight: 600;
+                                    <!-- Element Attribute / Content Line -->
+                                    letter-spacing: 0.05em; background: #f8fafc; color: #1e293b;"> <!-- Styling -->
+                                    <button type="button" class="btn btn-outline" id="btnToggleAPIKeyMask" <!-- Element
+                                        Attribute / Content Line -->
+                                        title="Reveal or mask secret key"> <!-- Mask toggle button -->
+                                        <i class="ri-eye-line"></i> Reveal Key <!-- Button text -->
+                                    </button> <!-- End mask toggle button -->
+                                    <button type="button" class="btn btn-outline" id="btnCopyAPIKey" <!-- Element
+                                        Attribute / Content Line -->
+                                        title="Copy key to clipboard"> <!-- Copy button -->
+                                        <i class="ri-file-copy-line"></i> Copy Key <!-- Button text -->
+                                    </button> <!-- End copy button -->
+                                    <button type="button" class="btn btn-warning" id="btnRegenerateAPIKey" <!-- Element
+                                        Attribute / Content Line -->
+                                        title="Issue new cryptographically random key"> <!-- Regenerate button -->
+                                        <i class="ri-refresh-line"></i> Regenerate API Key <!-- Button text -->
+                                    </button> <!-- End regenerate button -->
+                                </div> <!-- End api key container -->
+                                <span <!-- Element Attribute / Content Line -->
+                                    style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.4rem; display:
+                                    block;"> <!-- Element Attribute / Content Line -->
+                                    <!-- Security note -->
+                                    <i class="ri-shield-check-line" style="color: #10b981;"></i> 256-bit entropy
+                                    <!-- Element Attribute / Content Line -->
+                                    generated using Web Cryptography API (CSPRNG window.crypto.getRandomValues). Keep
+                                    <!-- Element Attribute / Content Line -->
+                                    this key strictly confidential. <!-- Note text -->
+                                </span> <!-- End security note -->
+                            </div> <!-- End form group -->
+                            <div class="dashboard-grid" <!-- Element Attribute / Content Line -->
+                                style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem;
+                                margin-bottom: 1rem;"> <!-- Element Attribute / Content Line -->
+                                <!-- Endpoints grid -->
+                                <div class="card" <!-- Element Attribute / Content Line -->
+                                    style="background: #f8fafc; border: 1px solid #e2e8f0; box-shadow: none;">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Outbound endpoint box -->
+                                    <div class="card-header" <!-- Element Attribute / Content Line -->
+                                        style="padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0;">
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Box header -->
+                                        <div class="card-title" style="font-size: 0.85rem;"><i <!-- Element Attribute /
+                                                Content Line -->
+                                                class="ri-upload-cloud-line" style="color:#0284c7;"></i> Outbound
+                                            <!-- Element Attribute / Content Line -->
+                                            Broadcast Gateway Webhook
+                                        </div> <!-- Box title -->
+                                        <span class="badge badge-info" style="font-size: 0.68rem;">POST</span>
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- HTTP method badge -->
+                                    </div> <!-- End box header -->
+                                    <div class="card-body" style="padding: 1rem;"> <!-- Box body -->
+                                        <div <!-- Element Attribute / Content Line -->
+                                            style="font-family: var(--font-mono); font-size: 0.78rem; background:
+                                            #ffffff; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid
+                                            #cbd5e1; word-break: break-all; margin-bottom: 0.75rem; color: #0f172a;">
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- URL code box -->
+                                            https://api.sms-gateway.com/v1/broadcast <!-- URL string -->
+                                        </div> <!-- End URL code box -->
+                                        <div <!-- Element Attribute / Content Line -->
+                                            style="display: flex; gap: 0.5rem; justify-content: space-between;
+                                            align-items: center;"> <!-- Element Attribute / Content Line -->
+                                            <!-- Actions row -->
+                                            <span style="font-size: 0.72rem; color: var(--text-muted);">Header:
+                                                <!-- Element Attribute / Content Line -->
+                                                <code>Authorization: Bearer &lt;KEY&gt;</code></span>
+
+
+                                            / Content Line -->
+                                            id="btnCopyOutboundEndpoint"><i class="ri-file-copy-line"></i> Copy
+                                            <!-- Element Attribute / Content Line -->
+                                            URL</button> <!-- Copy button -->
+                                        </div> <!-- End actions row -->
+                                    </div> <!-- End box body -->
+                                </div> <!-- End outbound box -->
+                                <div class="card" <!-- Element Attribute / Content Line -->
+                                    style="background: #f8fafc; border: 1px solid #e2e8f0; box-shadow: none;">
+                                    <!-- Element Attribute / Content Line -->
+                                    <!-- Inbound endpoint box -->
+                                    <div class="card-header" <!-- Element Attribute / Content Line -->
+                                        style="padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0;">
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- Box header -->
+                                        <div class="card-title" style="font-size: 0.85rem;"><i <!-- Element Attribute /
+                                                Content Line -->
+                                                class="ri-download-cloud-line" style="color:#10b981;"></i> Inbound
+                                            <!-- Element Attribute / Content Line -->
+                                            Two-Way Webhook Receiver
+                                        </div> <!-- Box title -->
+                                        <span class="badge badge-success" style="font-size: 0.68rem;">POST</span>
+                                        <!-- Element Attribute / Content Line -->
+                                        <!-- HTTP method badge -->
+                                    </div> <!-- End box header -->
+                                    <div class="card-body" style="padding: 1rem;"> <!-- Box body -->
+                                        <div <!-- Element Attribute / Content Line -->
+                                            style="font-family: var(--font-mono); font-size: 0.78rem; background:
+                                            #ffffff; padding: 0.6rem 0.8rem; border-radius: 6px; border: 1px solid
+                                            #cbd5e1; word-break: break-all; margin-bottom: 0.75rem; color: #0f172a;">
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- URL code box -->
+                                            https://profbaidoo-sms.edu.gh/api/v1/inbound <!-- URL string -->
+                                        </div> <!-- End URL code box -->
+                                        <div <!-- Element Attribute / Content Line -->
+                                            style="display: flex; gap: 0.5rem; justify-content: space-between;
+                                            align-items: center; flex-wrap: wrap;">
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Actions row -->
+                                            <button type="button" class="btn btn-outline btn-sm" <!-- Element Attribute
+                                                / Content Line -->
+                                                id="btnCopyInboundEndpoint"><i class="ri-file-copy-line"></i> Copy
+                                                <!-- Element Attribute / Content Line -->
+                                                URL</button> <!-- Copy button -->
+                                            <button type="button" class="btn btn-primary-gradient btn-sm" <!-- Element
+                                                Attribute / Content Line -->
+                                                id="btnOpenInboundSimulator"><i class="ri-terminal-box-line"></i>
+                                                <!-- Element Attribute / Content Line -->
+                                                Inbound API Simulator</button> <!-- Simulator launch button -->
+                                        </div> <!-- End actions row -->
+                                    </div> <!-- End box body -->
+                                </div> <!-- End inbound box -->
+                            </div> <!-- End endpoints grid -->
+                        </div> <!-- End card body -->
+                    </div> <!-- End API Hub card -->
+                    <!-- Section Visual Spacing Divider -->
+                    <!-- Inbound Parent Replies & Incoming Messages Inbox Card -->
+                    <div class="card" style="margin-bottom: 1.5rem;"> <!-- Inbox card container -->
+                        <div class="card-header"> <!-- Inbox header -->
+                            <div class="card-title"> <!-- Inbox title -->
+                                <i class="ri-mail-download-fill"></i> Inbound Messages & Parent Replies (Two-Way
+                                <!-- Element Attribute / Content Line -->
+                                Authenticated Inbox) <!-- Title text -->
+                            </div> <!-- End inbox title -->
+                            <div class="badge badge-success" style="font-size: 0.75rem;"> <!-- Live badge -->
+                                <i class="ri-checkbox-circle-fill"></i> Authenticated via X-API-Key
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Verified status -->
+                            </div> <!-- End live badge -->
+                        </div> <!-- End inbox header -->
+                        <div class="card-body" style="padding: 0;"> <!-- Inbox body -->
+                            <div class="table-responsive"> <!-- Responsive table container -->
+                                <table class="data-table"> <!-- Data table -->
+                                    <thead> <!-- Table header -->
+                                        <tr> <!-- Header row -->
+                                            <th style="width: 120px;">Verification</th> <!-- Status column -->
+                                            <th style="width: 120px;">Timestamp</th> <!-- Time column -->
+                                            <th style="width: 180px;">Sender / Guardian</th> <!-- Sender column -->
+                                            <th style="width: 160px;">Student Ward</th> <!-- Ward column -->
+                                            <th>Inbound Message Content</th> <!-- Message text column -->
+                                            <th style="width: 110px; text-align: center;">Action</th>
+                                            <!-- Element Attribute / Content Line -->
+                                            <!-- Action column -->
+                                        </tr> <!-- End header row -->
+                                    </thead> <!-- End table header -->
+                                    <tbody id="inboundMessagesTableBody"> <!-- Dynamic rows body -->
+                                        <!-- Rendered dynamically by SMS.js renderNoticeBoard() -->
+                                    </tbody> <!-- End dynamic tbody -->
+                                </table> <!-- End data table -->
+                            </div> <!-- End responsive container -->
+                        </div> <!-- End inbox body -->
+                    </div> <!-- End inbox card -->
+                    <!-- Section Visual Spacing Divider -->
+                    <!-- Outbound Announcement API Dispatches Audit Log Card -->
+                    <div class="card" style="margin-bottom: 1.5rem;"> <!-- Log card container -->
+                        <div class="card-header"> <!-- Log header -->
+                            <div class="card-title"> <!-- Log title -->
+                                <i class="ri-broadcast-line"></i> Outbound Announcement API Dispatches Log
+                                <!-- Element Attribute / Content Line -->
+                                <!-- Title text -->
+                            </div> <!-- End log title -->
+                            <div class="badge badge-info" style="font-size: 0.75rem;"> <!-- Log badge -->
+                                <i class="ri-history-line"></i> Gateway Audit Trail <!-- Audit text -->
+                            </div> <!-- End log badge -->
+                        </div> <!-- End log header -->
+                        <div class="card-body" style="padding: 0;"> <!-- Log body -->
+                            <div class="table-responsive"> <!-- Responsive table container -->
+                                <table class="data-table"> <!-- Data table -->
+                                    <thead> <!-- Table header -->
+                                        <tr> <!-- Header row -->
+                                            <th style="width: 140px;">Delivery Status</th> <!-- Status column -->
+                                            <th style="width: 120px;">Timestamp</th> <!-- Time column -->
+                                            <th style="width: 150px;">Target Group</th> <!-- Audience column -->
+                                            <th style="width: 130px;">Recipients</th> <!-- Count column -->
+                                            <th>Announcement Message Body</th> <!-- Body column -->
+                                            <th style="width: 140px;">Trace ID</th> <!-- Trace column -->
+                                        </tr> <!-- End header row -->
+                                    </thead> <!-- End table header -->
+                                    <tbody id="outboundDispatchesTableBody"> <!-- Dynamic rows body -->
+                                        <!-- Rendered dynamically by SMS.js renderNoticeBoard() -->
+                                    </tbody> <!-- End dynamic tbody -->
+                                </table> <!-- End data table -->
+                            </div> <!-- End responsive container -->
+                        </div> <!-- End log body -->
+                    </div> <!-- End log card -->
+                    <!-- Section Visual Spacing Divider -->
+                    <!-- Developer API Integration Guide Card -->
+                    <div class="card" style="margin-bottom: 1.5rem;"> <!-- Guide card container -->
+                        <div class="card-header"> <!-- Guide header -->
+                            <div class="card-title"> <!-- Guide title -->
+                                <i class="ri-code-s-slash-line"></i> Developer Two-Way API Integration Guide
+                                <!-- Title text -->
+                            </div> <!-- End guide title -->
+                            <div class="badge badge-primary" style="font-size: 0.75rem;">REST / JSON API</div>
+                            <!-- Badge -->
+                        </div> <!-- End guide header -->
+                        <div class="card-body"> <!-- Guide body -->
+                            <p
+                                style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem; line-height: 1.5;">
+                                <!-- Guide intro -->
+                                External microservices, telco aggregators (Hubtel, Arkesel, Twilio), and WhatsApp bots
+                                can programmatically ingest incoming parent replies or trigger outbound announcements
+                                using these authenticated endpoints: <!-- Guide text -->
+                            </p> <!-- End guide intro -->
+                            <div class="dashboard-grid"
+                                style="grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem;">
+                                <!-- Examples grid -->
+                                <!-- Left Snippet: Inbound cURL Webhook -->
+                                <div class="dev-snippet-card"> <!-- cURL snippet card -->
+                                    <div class="dev-snippet-header"> <!-- Snippet card header -->
+                                        <div class="dev-snippet-title"> <!-- Snippet title -->
+                                            <i class="ri-terminal-box-line" style="color: #0284c7;"></i> cURL Inbound
+                                            Parent Reply <!-- Title text -->
+                                        </div> <!-- End snippet title -->
+                                        <button type="button" class="btn btn-outline btn-sm" id="btnCopyCurlSnippet"
+                                            title="Copy cURL snippet"> <!-- Copy button -->
+                                            <i class="ri-file-copy-line"></i> Copy Code <!-- Button text -->
+                                        </button> <!-- End copy button -->
+                                    </div> <!-- End snippet header -->
+                                    <pre class="dev-code-pre"><code><span class="code-token-comment"># Ingest incoming message via Webhook (POST)</span> <!-- Element Attribute / Content Line -->
+<span class="code-token-cmd">curl</span> -X POST <span class="code-token-url">https://profbaidoo-sms.edu.gh/api/v1/inbound</span> \ <!-- Element Attribute / Content Line -->
+  -H <span class="code-token-header">"Content-Type: application/json"</span> \ <!-- Element Attribute / Content Line -->
+  -H <span class="code-token-header">"X-API-Key: pb_live_sec_7f9a2b8e3c1d45089e6f..."</span> \ <!-- Element Attribute / Content Line -->
+  -d '{ <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"senderName"</span>: <span class="code-token-string">"Mrs. Vivian Appiah"</span>, <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"senderPhone"</span>: <span class="code-token-string">"+233245557890"</span>, <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"studentName"</span>: <span class="code-token-string">"Kwame Mensah"</span>, <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"studentClass"</span>: <span class="code-token-string">"Primary 1"</span>, <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"message"</span>: <span class="code-token-string">"Acknowledged. I will attend the PTA meeting."</span> <!-- Element Attribute / Content Line -->
+  }'</code></pre> <!-- End cURL code block -->
+                                </div> <!-- End cURL snippet card -->
+                                <!-- Right Snippet: Outbound JavaScript Fetch -->
+                                <div class="dev-snippet-card"> <!-- JS snippet card -->
+                                    <div class="dev-snippet-header"> <!-- Snippet card header -->
+                                        <div class="dev-snippet-title"> <!-- Snippet title -->
+                                            <i class="ri-javascript-line" style="color: #eab308;"></i> JavaScript
+                                            Outbound Broadcast <!-- Title text -->
+                                        </div> <!-- End snippet title -->
+                                        <button type="button" class="btn btn-outline btn-sm" id="btnCopyJsSnippet"
+                                            title="Copy JavaScript snippet"> <!-- Copy button -->
+                                            <i class="ri-file-copy-line"></i> Copy Code <!-- Button text -->
+                                        </button> <!-- End copy button -->
+                                    </div> <!-- End snippet header -->
+                                    <pre class="dev-code-pre"><code><span class="code-token-comment">// Broadcast announcement to parents (POST)</span> <!-- Element Attribute / Content Line -->
+<span class="code-token-cmd">const</span> res = <span class="code-token-cmd">await</span> <span class="code-token-cmd">fetch</span>(<span class="code-token-url">"https://api.sms-gateway.com/v1/broadcast"</span>, { <!-- Element Attribute / Content Line -->
+  method: <span class="code-token-string">"POST"</span>, <!-- Element Attribute / Content Line -->
+  headers: { <!-- Element Attribute / Content Line -->
+    <span class="code-token-header">"Authorization"</span>: <span class="code-token-string">"Bearer pb_live_sec_7f9a2b8e3c1d45089e6f..."</span>, <!-- Element Attribute / Content Line -->
+    <span class="code-token-header">"Content-Type"</span>: <span class="code-token-string">"application/json"</span> <!-- Element Attribute / Content Line -->
+  }, <!-- Element Attribute / Content Line -->
+  body: JSON.stringify({ <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"recipientGroup"</span>: <span class="code-token-string">"Primary 1"</span>, <!-- Element Attribute / Content Line -->
+    <span class="code-token-key">"content"</span>: <span class="code-token-string">"Notice: Terminal reports will be issued on Friday."</span> <!-- Element Attribute / Content Line -->
+  }) <!-- Element Attribute / Content Line -->
+});</code></pre> <!-- End JS code block -->
+                                </div> <!-- End JS snippet card -->
+                            </div> <!-- End examples grid -->
+                        </div> <!-- End guide body -->
+                    </div> <!-- End guide card -->
+                </section> <!-- End of noticeView section -->
+                <!-- Section Visual Spacing Divider -->
+                <!-- 10. SETTINGS & DATA MANAGEMENT VIEW -->
+                <section class="view-panel" id="settingsView">
+                    <div class="view-header">
+                        <div class="view-title-group">
+                            <h1><i class="ri-settings-4-fill"></i> System Settings & Data Center</h1>
+                            <p>Configure institution branding, academic terms, and perform full JSON backups</p>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- School Profile Form -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title"><i class="ri-building-line"></i> School Institutional Profile
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <form id="schoolProfileForm">
+                                    <div class="form-grid">
+                                        <div class="form-group form-group-full">
+                                            <label class="form-label">School Official Name:</label>
+                                            <input type="text" id="settingSchoolName" class="form-input"
+                                                value="Prof~Baidoo EduComplex">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">School Motto / Tagline:</label>
+                                            <input type="text" id="settingSchoolMotto" class="form-input"
+                                                value="Virtue is Our Strongest Helmet">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Official Phone:</label>
+                                            <input type="text" id="settingSchoolPhone" class="form-input"
+                                                value="+233 256331492">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Official Email:</label>
+                                            <input type="email" id="settingSchoolEmail" class="form-input"
+                                                value="admin@profbaidooeducomplexacademy.edu">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Headteacher / Principal Name:</label>
+                                            <input type="text" id="settingPrincipalName" class="form-input"
+                                                value="Prof. Nathaniel Esoun Baidoo">
+                                        </div>
+                                        <div class="form-group form-group-full">
+                                            <label class="form-label">Physical Campus Address:</label>
+                                            <input type="text" id="settingSchoolAddress" class="form-input"
+                                                value="Assin Foso, Behind Cocoa Depot">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-secondary" style="margin-top: 1.25rem;">
+                                        <i class="ri-save-line"></i> Save School Information
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Academic Term & Grading Scale Configuration -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title"><i class="ri-award-line"></i> Basic School Grading Scale & Term
+                                    Settings</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-grid">
+                                    <div class="form-group form-group-full">
+                                        <label class="form-label">Active Academic Session / Term:</label>
+                                        <input type="text" id="settingCurrentTerm" class="form-input"
+                                            value="2026/2027 Academic Year • Term 2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Continuous Assessment (CA) Weight:</label>
+                                        <input type="text" class="form-input"
+                                            value="50% (Class Tests, Homework, Projects)" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Terminal Examination Weight:</label>
+                                        <input type="text" class="form-input" value="50% (End of Term Exam)" readonly>
+                                    </div>
+                                    <div class="form-group form-group-full">
+                                        <label class="form-label">Grading Benchmarks (Basic School Standard):</label>
+                                        <div
+                                            style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:0.5rem; margin-top:0.25rem;">
+                                            <div class="att-stat-badge" style="color:var(--success);"><span
+                                                    class="badge badge-success">Grade A</span> 80% - 100% (Excellent)
+                                            </div>
+                                            <div class="att-stat-badge" style="color:var(--accent-cyan);"><span
+                                                    class="badge badge-info">Grade B</span> 70% - 79% (Very Good)</div>
+                                            <div class="att-stat-badge" style="color:var(--primary-light);"><span
+                                                    class="badge badge-purple">Grade C</span> 60% - 69% (Good)</div>
+                                            <div class="att-stat-badge" style="color:var(--warning);"><span
+                                                    class="badge badge-warning">Grade D</span> 50% - 59% (Average)</div>
+                                            <div class="att-stat-badge" style="color:var(--danger);"><span
+                                                    class="badge badge-danger">Grade F</span> Below 50% (Fail)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Backup & Reset -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title"><i class="ri-database-2-line"></i> Data Backup & Restore</div>
+                            </div>
+                            <div class="card-body" style="display:flex; flex-direction:column; gap:1.25rem;">
+                                <div>
+                                    <h4 style="font-size:0.9rem; margin-bottom:0.3rem;">Export Complete JSON Backup</h4>
+                                    <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.75rem;">
+                                        Download all students, staff, attendance logs, and financial records into a
+                                        single JSON file.</p>
+                                    <button class="btn btn-secondary" id="btnExportJSON">
+                                        <i class="ri-file-download-line"></i> Download Backup JSON
+                                    </button>
+                                </div>
+
+                                <div style="border-top: 1px solid var(--bg-surface-border); padding-top:1.25rem;">
+                                    <h4 style="font-size:0.9rem; margin-bottom:0.3rem;">Restore from JSON Backup</h4>
+                                    <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.75rem;">Upload
+                                        a previously exported `.json` file to restore the entire database.</p>
+                                    <input type="file" id="importJSONInput" accept=".json" style="display:none;">
+                                    <button class="btn btn-outline" id="btnImportJSONTrigger">
+                                        <i class="ri-file-upload-line"></i> Choose File to Restore
+                                    </button>
+                                </div>
+
+                                <div style="border-top: 1px solid var(--bg-surface-border); padding-top:1.25rem;">
+                                    <h4 style="font-size:0.9rem; color:var(--danger); margin-bottom:0.3rem;">Reset to
+                                        Fresh Demo Seed Data</h4>
+                                    <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:0.75rem;">
+                                        Re-populate the system with 24+ basic school students, 8 faculty teachers, fee
+                                        records, and sample grades.</p>
+                                    <button class="btn btn-danger btn-sm" id="btnResetSeedData">
+                                        <i class="ri-restart-line"></i> Factory Reset Demo Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ======================================================================
+         MODALS SYSTEM
+         ====================================================================== -->
+
+    <!-- MODAL 1: ADD / EDIT STUDENT -->
+    <div class="modal-overlay" id="modalStudent">
+        <div class="modal-container modal-lg">
+            <div class="modal-header">
+                <div class="modal-title" id="modalStudentTitle">
+                    <i class="ri-user-add-line"></i> Add New Student
+                </div>
+                <button class="btn-close-modal" data-modal="modalStudent"><i class="ri-close-line"></i></button>
+            </div>
+            <form id="studentForm">
+                <input type="hidden" id="studentEditId">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" id="studFirstName" class="form-input" required placeholder="e.g. Kwame">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" id="studLastName" class="form-input" required placeholder="e.g. Mensah">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Class / Grade *</label>
+                            <select id="studClass" class="form-select" required>
+                                <option value="Nursery 1">Nursery 1</option>
+                                <option value="Nursery 2">Nursery 2</option>
+                                <option value="KG 1">KG 1</option>
+                                <option value="KG 2">KG 2</option>
+                                <option value="Primary 1" selected>Primary 1</option>
+                                <option value="Primary 2">Primary 2</option>
+                                <option value="Primary 3">Primary 3</option>
+                                <option value="Primary 4">Primary 4</option>
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="JHS 1">JHS 1</option>
+                                <option value="JHS 2">JHS 2</option>
+                                <option value="JHS 3">JHS 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender *</label>
+                            <select id="studGender" class="form-select" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" id="studDOB" class="form-input" value="2018-05-14">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Admission / Roll No</label>
+                            <input type="text" id="studAdmissionNo" class="form-input"
+                                placeholder="Auto-generated if blank">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Parent / Guardian Full Name *</label>
+                            <input type="text" id="studGuardianName" class="form-input" required
+                                placeholder="e.g. Mr. Joseph Mensah">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Guardian Phone Number *</label>
+                            <input type="tel" id="studGuardianPhone" class="form-input" required
+                                placeholder="e.g. +233 24 123 4567">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Residential Address</label>
+                            <input type="text" id="studAddress" class="form-input" placeholder="e.g. East Legon Hills">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Known Allergies / Medical Notes</label>
+                            <input type="text" id="studMedical" class="form-input"
+                                placeholder="e.g. Asthmatic, Peanut Allergy (None if safe)">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="modalStudent">Cancel</button>
+                    <button type="submit" class="btn-primary-gradient"><i class="ri-save-line"></i> Save Student
+                        Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: CONFIRM DELETE MEMBER -->
+    <div class="modal-overlay" id="modalConfirmDelete">
+        <div class="modal-container modal-sm">
+            <div class="modal-body">
+                <div class="delete-confirm-box">
+                    <div class="delete-warn-icon">
+                        <i class="ri-delete-bin-fill"></i>
+                    </div>
+                    <div class="delete-confirm-title" id="deleteConfirmTitle">Confirm Removal</div>
+                    <div class="delete-confirm-desc" id="deleteConfirmDesc">
+                        Are you sure you want to remove this member from the school registry? This action will archive
+                        their profile.
+                    </div>
+                    <div class="delete-target-badge" id="deleteTargetBadge">Member Name</div>
+                    <div style="display:flex; justify-content:center; gap:0.75rem;">
+                        <button type="button" class="btn btn-outline" data-modal="modalConfirmDelete">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="btnConfirmDeleteAction">
+                            <i class="ri-delete-bin-line"></i> Yes, Remove Permanently
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: STUDENT ID CARD & DIGITAL PROFILE -->
+    <div class="modal-overlay" id="modalIDCard">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title"><i class="ri-id-card-fill"></i> Digital Student ID Card</div>
+                <button class="btn-close-modal" data-modal="modalIDCard"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="id-card-preview-wrap">
+                    <div class="student-id-badge" id="studentIDBadgePrintable">
+                        <div class="id-header">
+                            <div class="id-school-crest"><i class="ri-book-open-fill"></i></div>
+                            <div class="id-school-name" id="idCardSchoolName">Prof~Baidoo Academy</div>
+                        </div>
+                        <div class="id-photo-frame">
+                            <div class="id-photo-inner" id="idCardAvatar">KM</div>
+                        </div>
+                        <div class="id-student-name" id="idCardStudentName">Kwame Mensah</div>
+                        <div class="id-student-role" id="idCardClass">Primary 1 • Student</div>
+
+                        <div class="id-details-box">
+                            <div><strong>Admis. No:</strong> <span id="idCardAdmNo">CH-2026-001</span></div>
+                            <div><strong>Gender:</strong> <span id="idCardGender">Male</span></div>
+                            <div><strong>DOB:</strong> <span id="idCardDOB">14-May-2018</span></div>
+                            <div><strong>Valid Till:</strong> <span>Jul 2027</span></div>
+                            <div style="grid-column: 1 / -1;"><strong>Emergency:</strong> <span
+                                    id="idCardEmergency">+233 24 123 4567</span></div>
+                        </div>
+
+                        <div class="id-qr-box">
+                            <i class="ri-qr-code-line" style="font-size: 2.2rem; color: #fff;"></i>
+                            <div class="id-barcode" id="idCardBarcode">||||| | |||| ||| ||||</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-modal="modalIDCard">Close</button>
+                <button type="button" class="btn-primary-gradient" onclick="window.print()">
+                    <i class="ri-printer-line"></i> Print ID Card
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: OFFICIAL PRINTABLE TERMINAL REPORT CARD -->
+    <div class="modal-overlay" id="modalReportCard">
+        <div class="modal-container modal-xl">
+            <div class="modal-header">
+                <div class="modal-title"><i class="ri-file-paper-2-fill"></i> Official Terminal Academic Report Card
+                </div>
+                <button class="btn-close-modal" data-modal="modalReportCard"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="report-card-paper" id="reportCardPrintable">
+                    <div class="rc-header">
+                        <div class="rc-brand">
+                            <div class="rc-crest"><i class="ri-book-open-fill"></i></div>
+                            <div class="rc-school-info">
+                                <h2 id="rcSchoolName">Prof~Baidoo EduComplex</h2>
+                                <p id="rcSchoolTagline">Virtue is Our Strongest helmet</p>
+                                <p id="rcSchoolAddress">Assin Foso, Behind Cocoa Depot • Tel: +233 256331492</p>
+                            </div>
+                        </div>
+                        <div class="rc-title-badge">
+                            <h3>Terminal Report</h3>
+                            <span id="rcTermBadge">2026/2027 • Term 2</span>
+                        </div>
+                    </div>
+
+                    <div class="rc-student-grid">
+                        <div class="rc-student-field">
+                            <label>Student Name:</label>
+                            <span id="rcStudentName">Kwame Mensah</span>
+                        </div>
+                        <div class="rc-student-field">
+                            <label>Admission No:</label>
+                            <span id="rcAdmissionNo">CH001</span>
+                        </div>
+                        <div class="rc-student-field">
+                            <label>Class / Grade:</label>
+                            <span id="rcClass">Primary 1</span>
+                        </div>
+                        <div class="rc-student-field">
+                            <label>Attendance:</label>
+                            <span id="rcAttendance">58 / 60 Days (96.7%)</span>
+                        </div>
+                        <div class="rc-student-field">
+                            <label>Position in Class:</label>
+                            <span id="rcPosition">1st of 24 Pupils</span>
+                        </div>
+                        <div class="rc-student-field">
+                            <label>Overall Average / GPA:</label>
+                            <span id="rcAverage">92.4% (Grade A+)</span>
+                        </div>
+                    </div>
+
+                    <table class="rc-grades-table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th style="text-align:center;">Class Score (50%)</th>
+                                <th style="text-align:center;">Exam Score (50%)</th>
+                                <th style="text-align:center;">Total (100%)</th>
+                                <th style="text-align:center;">Grade</th>
+                                <th>Subject Teacher Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rcGradesTableBody">
+                            <!-- Dynamic report card rows -->
+                        </tbody>
+                    </table>
+
+                    <div class="rc-summary-grid">
+                        <div class="rc-box">
+                            <h4>Class Teacher's Assessment & Remarks:</h4>
+                            <p id="rcTeacherRemarks">"An exceptional pupil who shows exemplary dedication, sharp
+                                analytical thinking, and great teamwork in all classroom projects. Keep up the high
+                                standard!"</p>
+                        </div>
+                        <div class="rc-box">
+                            <h4>Headteacher's Concluding Remarks:</h4>
+                            <p id="rcHeadmasterRemarks">"Outstanding terminal performance! Promoted with highest honors
+                                to the Academic Dean's list for this term."</p>
+                        </div>
+                    </div>
+
+                    <div class="rc-signatures">
+                        <div class="rc-sig-line">
+                            Class Teacher's Signature
+                        </div>
+                        <div class="rc-sig-line">
+                            Headteacher / Principal Seal
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-modal="modalReportCard">Close</button>
+                <button type="button" class="btn-primary-gradient" onclick="window.print()">
+                    <i class="ri-printer-line"></i> Print Official Report Card
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: RECORD FEE PAYMENT & CASH RECEIPT -->
+    <div class="modal-overlay" id="modalPayment">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title"><i class="ri-hand-coin-fill"></i> Record Fee Payment</div>
+                <button class="btn-close-modal" data-modal="modalPayment"><i class="ri-close-line"></i></button>
+            </div>
+            <form id="feePaymentForm">
+                <div class="modal-body">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label">Select Student *</label>
+                        <select id="paymentStudentSelect" class="form-select" required>
+                            <!-- Dynamic student options -->
+                        </select>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Payment Amount (Ghc) *</label>
+                            <input type="number" id="paymentAmount" class="form-input" required min="1" step="0.5"
+                                placeholder="e.g. 150">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Method *</label>
+                            <select id="paymentMethod" class="form-select">
+                                <option value="Mobile Money (MoMo)">Mobile Money (MoMo)</option>
+                                <option value="Cash Deposit">Cash Deposit</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Payment Date</label>
+                            <input type="date" id="paymentDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fee Category</label>
+                            <select id="paymentCategory" class="form-select">
+                                <option value="Tuition & Academic">Tuition & Academic</option>
+                                <option value="PTA Dues">PTA Dues</option>
+                                <option value="Feeding / Lunch">Feeding / Lunch</option>
+                                <option value="School Bus / Transport">School Bus / Transport</option>
+                            </select>
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label class="form-label">Transaction Reference / Remark</label>
+                            <input type="text" id="paymentRef" class="form-input"
+                                placeholder="e.g. MoMo Ref: Schoolfess">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="modalPayment">Cancel</button>
+                    <button type="submit" class="btn-success"><i class="ri-check-line"></i> Record & Generate
+                        Receipt</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 6: OFFICIAL CASH PAYMENT RECEIPT -->
+    <div class="modal-overlay" id="modalReceipt">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title"><i class="ri-receipt-line"></i> Official School Fee Receipt</div>
+                <button class="btn-close-modal" data-modal="modalReceipt"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="receipt-paper" id="receiptPrintable">
+                    <div class="receipt-header">
+                        <div class="receipt-brand-title">Prof~Baidoo Basic Academy</div>
+                        <div style="font-size:0.75rem; color:#64748b;">Official Fee Payment Receipt</div>
+                        <div class="receipt-num" id="rcptNumber">Receipt #: CH-REC-2026-0042</div>
+                        <div style="font-size:0.72rem; color:#64748b;" id="rcptDate">Date: 03-Sep-2026</div>
+                    </div>
+
+                    <div style="margin-bottom:1rem;">
+                        <div class="receipt-item-row">
+                            <span style="color:#64748b;">Student Name:</span>
+                            <strong id="rcptStudentName">Kwame Mensah</strong>
+                        </div>
+                        <div class="receipt-item-row">
+                            <span style="color:#64748b;">Admission No:</span>
+                            <span id="rcptAdmissionNo">CH-2026-001</span>
+                        </div>
+                        <div class="receipt-item-row">
+                            <span style="color:#64748b;">Class / Grade:</span>
+                            <span id="rcptClass">Primary 1</span>
+                        </div>
+                        <div class="receipt-item-row">
+                            <span style="color:#64748b;">Payment Category:</span>
+                            <span id="rcptCategory">Tuition & Academic</span>
+                        </div>
+                        <div class="receipt-item-row">
+                            <span style="color:#64748b;">Payment Method:</span>
+                            <span id="rcptMethod">Mobile Money (MoMo)</span>
+                        </div>
+                        <div class="receipt-item-row">
+                            <span style="color:#64748b;">Transaction Ref:</span>
+                            <span id="rcptRef">MM-29381903</span>
+                        </div>
+                    </div>
+
+                    <div class="receipt-total-row">
+                        <span>Amount Paid:</span>
+                        <span id="rcptAmountPaid">GHC 150.00</span>
+                    </div>
+                    <div class="receipt-item-row" style="margin-top:0.35rem; color:#ef4444; font-weight:600;">
+                        <span>Balance Remaining:</span>
+                        <span id="rcptBalance">GHC 0.00</span>
+                    </div>
+
+                    <div style="margin-top:1.5rem; text-align:center; font-size:0.72rem; color:#64748b;">
+                        Thank you for your timely payment.<br>
+                        <em>Prof~Baidoo Academy Accounts & Finance Division</em>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-modal="modalReceipt">Close</button>
+                <button type="button" class="btn-primary-gradient" onclick="window.print()">
+                    <i class="ri-printer-line"></i> Print Receipt
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 7: ADD / EDIT STAFF -->
+    <div class="modal-overlay" id="modalStaff">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title" id="modalStaffTitle"><i class="ri-user-add-line"></i> Add New Teacher / Staff
+                </div>
+                <button class="btn-close-modal" data-modal="modalStaff"><i class="ri-close-line"></i></button>
+            </div>
+            <form id="staffForm">
+                <input type="hidden" id="staffEditId">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" id="staffName" class="form-input" required
+                                placeholder="e.g. Madam Grace Osei">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Designation / Role *</label>
+                            <input type="text" id="staffRole" class="form-input" required
+                                placeholder="e.g. Primary 1 Class Teacher">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Assigned Class</label>
+                            <select id="staffAssignedClass" class="form-select">
+                                <option value="None">None (Subject Teacher)</option>
+                                <option value="Nursery 1">Nursery 1</option>
+                                <option value="Nursery 2">Nursery 2</option>
+                                <option value="KG 1">KG 1</option>
+                                <option value="KG 2">KG 2</option>
+                                <option value="Primary 1">Primary 1</option>
+                                <option value="Primary 2">Primary 2</option>
+                                <option value="Primary 3">Primary 3</option>
+                                <option value="Primary 4">Primary 4</option>
+                                <option value="Primary 5">Primary 5</option>
+                                <option value="Primary 6">Primary 6</option>
+                                <option value="JHS 1">JHS 1</option>
+                                <option value="JHS 2">JHS 2</option>
+                                <option value="JHS 3">JHS 3</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subjects Taught</label>
+                            <input type="text" id="staffSubjects" class="form-input"
+                                placeholder="e.g. Mathematics, Science">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number *</label>
+                            <input type="tel" id="staffPhone" class="form-input" required
+                                placeholder="e.g. +233 24 333 4455">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" id="staffEmail" class="form-input"
+                                placeholder="e.g. grace.osei@profbaidooeducomplex.edu">
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label class="form-label">Qualification / Degree</label>
+                            <input type="text" id="staffDegree" class="form-input"
+                                placeholder="e.g. B.Ed in Basic Education (Univ. of Cape Coast)">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="modalStaff">Cancel</button>
+                    <button type="submit" class="btn-primary-gradient"><i class="ri-save-line"></i> Save Staff
+                        Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 8: PRINTABLE WEEKLY CLASS ATTENDANCE REGISTER -->
+    <div class="modal-overlay" id="modalPrintAttendance">
+        <div class="modal-container modal-xl">
+            <div class="modal-header">
+                <div class="modal-title"><i class="ri-printer-line"></i> Printable Weekly Class Attendance Register
+                </div>
+                <button class="btn-close-modal" data-modal="modalPrintAttendance"><i class="ri-close-line"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="attendance-sheet-paper" id="attendanceSheetPrintable">
+                    <div class="att-sheet-header">
+                        <div>
+                            <h2>Prof~Baidoo EduComplex</h2>
+                            <p>Assin Foso, Behind Cocoa Depot • Official Weekly Attendance Register</p>
+                        </div>
+                        <div style="text-align:right;">
+                            <span class="badge badge-purple" id="printAttClassBadge" style="font-size:0.9rem;">Primary
+                                1</span>
+                        </div>
+                    </div>
+
+                    <div class="att-sheet-meta">
+                        <div><strong>Class:</strong> <span id="printAttClassName">Primary 1</span></div>
+                        <div><strong>Class Teacher:</strong> <span id="printAttTeacherName">Madam Grace Osei</span>
+                        </div>
+                        <div><strong>Academic Term:</strong> <span>Term 2 (2026/2027)</span></div>
+                        <div><strong>Week Ending:</strong> <span id="printAttWeekDate">04-Sep-2026</span></div>
+                    </div>
+
+                    <table class="att-sheet-table">
+                        <thead>
+                            <tr>
+                                <th style="width:30px;">#</th>
+                                <th>Student Full Name</th>
+                                <th style="width:100px;">Admis. No</th>
+                                <th style="width:50px;">Sex</th>
+                                <th class="day-col">Mon</th>
+                                <th class="day-col">Tue</th>
+                                <th class="day-col">Wed</th>
+                                <th class="day-col">Thu</th>
+                                <th class="day-col">Fri</th>
+                                <th style="width:50px;">Total</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="printAttTableBody">
+                            <!-- Dynamic roster rows for print -->
+                        </tbody>
+                    </table>
+
+                    <div class="att-sheet-signatures">
+                        <div>Class Master's Signature: _______________________</div>
+                        <div>Headteacher's Endorsement: _______________________</div>
+                        <div>Date: _________________</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" data-modal="modalPrintAttendance">Close</button>
+                <button type="button" class="btn-primary-gradient" onclick="window.print()">
+                    <i class="ri-printer-line"></i> Print Official Sheet
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 9: EDIT TIMETABLE SLOT -->
+    <div class="modal-overlay" id="modalEditTimetableSlot">
+        <div class="modal-container modal-sm">
+            <div class="modal-header">
+                <div class="modal-title"><i class="ri-edit-line"></i> Edit Timetable Period</div>
+                <button class="btn-close-modal" data-modal="modalEditTimetableSlot"><i
+                        class="ri-close-line"></i></button>
+            </div>
+            <form id="timetableSlotForm">
+                <input type="hidden" id="ttSlotDay">
+                <input type="hidden" id="ttSlotPeriod">
+                <div class="modal-body">
+                    <div class="form-grid">
+                        <div class="form-group form-group-full">
+                            <label class="form-label" id="ttSlotLabel">Day & Time Slot</label>
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label class="form-label">Subject *</label>
+                            <input type="text" id="ttSlotSubject" class="form-input" required
+                                placeholder="e.g. English Language">
+                        </div>
+                        <div class="form-group form-group-full">
+                            <label class="form-label">Assigned Teacher</label>
+                            <input type="text" id="ttSlotTeacher" class="form-input"
+                                placeholder="e.g. Madam Grace Osei">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" data-modal="modalEditTimetableSlot">Cancel</button>
+                    <button type="submit" class="btn-primary-gradient"><i class="ri-save-line"></i> Update Slot</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 10: GLOBAL COMMAND PALETTE (CTRL+K) -->
+    <div class="modal-overlay" id="modalCmdPalette">
+        <div class="modal-container" style="max-width: 540px;">
+            <div class="modal-body" style="padding: 1.25rem;">
+                <div class="filter-input-wrap" style="margin-bottom: 1rem;">
+                    <i class="ri-search-line"></i>
+                    <input type="text" id="cmdPaletteInput" class="filter-input"
+                        placeholder="Type a command, student name, or module..." autofocus>
+                </div>
+                <div id="cmdPaletteResults"
+                    style="display:flex; flex-direction:column; gap:0.4rem; max-height:300px; overflow-y:auto;">
+                    <!-- Command results rendered dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 11: INBOUND TWO-WAY MESSAGING API WEBHOOK SIMULATOR -->
+    <div class="modal-overlay" id="modalSimulateInboundAPI"> <!-- Modal overlay container -->
+        <div class="modal-container" style="max-width: 680px;"> <!-- Modal dialog container -->
+            <div class="modal-header"> <!-- Modal header -->
+                <div class="modal-title"> <!-- Modal title -->
+                    <i class="ri-terminal-box-fill"></i> Inbound Two-Way Messaging API Webhook Simulator
+                    <!-- Element Attribute / Content Line -->
+                    <!-- Title text with icon -->
+                </div> <!-- End modal title -->
+                <button type="button" class="modal-close" data-modal="modalSimulateInboundAPI">&times;</button>
+                <!-- Element Attribute / Content Line -->
+                <!-- Close button -->
+            </div> <!-- End modal header -->
+            <form id="formSimulateInboundAPI"> <!-- Form element -->
+                <div class="modal-body"> <!-- Modal body content -->
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        <!-- Element Attribute / Content Line -->
+                        <!-- Help text -->
+                        Simulate an external message or parent reply coming from an SMS gateway or WhatsApp integration
+                        <!-- Element Attribute / Content Line -->
+                        into the School Management System. If the API key is valid, the message will be verified and
+                        <!-- Element Attribute / Content Line -->
+                        stored in the school inbox. <!-- Details -->
+                    </p> <!-- End help text -->
+                    <div class="form-grid"> <!-- Form layout grid -->
+                        <div class="form-group form-group-full"> <!-- Form group: API Key -->
+                            <label class="form-label">X-API-Key (Header Token) *</label> <!-- Label -->
+                            <input type="text" id="inboundSimApiKey" class="form-input" required <!-- Input -->
+                            style="font-family: var(--font-mono); font-size: 0.83rem;"> <!-- Style -->
+                            <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Enter valid key
+                                <!-- Element Attribute / Content Line -->
+                                for 200 OK, or alter key to test 401 Unauthorized rejection</span> <!-- Hint -->
+                        </div> <!-- End form group: API Key -->
+                        <div class="form-group"> <!-- Form group: Sender Name -->
+                            <label class="form-label">Parent / Sender Name *</label> <!-- Label -->
+                            <input type="text" id="inboundSimSenderName" class="form-input" required <!-- Element
+                                Attribute / Content Line -->
+                            value="Mrs. Vivian Appiah"> <!-- Input -->
+                        </div> <!-- End form group: Sender Name -->
+                        <div class="form-group"> <!-- Form group: Sender Phone -->
+                            <label class="form-label">Sender Mobile Phone *</label> <!-- Label -->
+                            <input type="text" id="inboundSimPhone" class="form-input" required <!-- Element Attribute /
+                                Content Line -->
+                            value="+233 24 555 7890"> <!-- Input -->
+                        </div> <!-- End form group: Sender Phone -->
+                        <div class="form-group"> <!-- Form group: Student Ward -->
+                            <label class="form-label">Student Ward Name</label> <!-- Label -->
+                            <input type="text" id="inboundSimStudentName" class="form-input" value="Kwame Mensah">
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Input -->
+                        </div> <!-- End form group: Student Ward -->
+                        <div class="form-group"> <!-- Form group: Student Class -->
+                            <label class="form-label">Student Class</label> <!-- Label -->
+                            <input type="text" id="inboundSimClass" class="form-input" value="Primary 1"> <!-- Input -->
+                        </div> <!-- End form group: Student Class -->
+                        <div class="form-group form-group-full"> <!-- Form group: Message Content -->
+                            <label class="form-label">Inbound Reply / Message Payload *</label> <!-- Label -->
+                            <textarea id="inboundSimMessage" class="form-textarea" rows="3" required <!-- Textarea -->
+                                placeholder="Type the simulated incoming message from the parent...">Dear Prof~Baidoo Academy, I have acknowledged the announcement and will attend the PTA meeting.</textarea>
+                            <!-- Element Attribute / Content Line -->
+                            <!-- Placeholder -->
+                        </div> <!-- End form group: Message Content -->
+                    </div> <!-- End form grid -->
+                    <div style="margin-top: 1rem;"> <!-- Terminal container -->
+                        <label class="form-label" <!-- Element Attribute / Content Line -->
+                            style="font-weight: 700; font-size: 0.8rem; color: var(--text-primary);"> <!-- Label -->
+                            <i class="ri-terminal-line"></i> Webhook Server Gateway Response: <!-- Response label -->
+                        </label> <!-- End label -->
+                        <div id="inboundSimOutputTerminal" class="api-terminal-pre"> <!-- Terminal preformatted box -->
+                            <span style="color:#64748b;">// Ready: Submit simulated webhook payload to execute
+                                <!-- Element Attribute / Content Line -->
+                                test...</span> <!-- Idle status -->
+                        </div> <!-- End terminal box -->
+                    </div> <!-- End terminal container -->
+                </div> <!-- End modal body -->
+                <div class="modal-footer"> <!-- Modal footer -->
+                    <button type="button" class="btn btn-outline" data-modal="modalSimulateInboundAPI">Close</button>
+                    <!-- Element Attribute / Content Line -->
+                    <!-- Close button -->
+                    <button type="submit" id="btnSubmitInboundSim" class="btn-primary-gradient"> <!-- Submit button -->
+                        <i class="ri-send-plane-fill"></i> Dispatch Inbound Webhook Payload <!-- Submit text -->
+                    </button> <!-- End submit button -->
+                </div> <!-- End modal footer -->
+            </form> <!-- End form -->
+        </div> <!-- End modal container -->
+    </div> <!-- End modal overlay -->
+
+    <!-- QR Code Generator Engine (Local & Offline Ready) -->
+    <script src="qrcode.min.js"></script>
+    <!-- Application Security, 2FA, Salt+Pepper, and Row-Level Authorization Engine -->
+    <script src="auth.js"></script> <!-- Security Engine Script -->
+    <!-- Application Core Script Engine -->
+    <script src="SMS.js"></script> <!-- Core Application Script -->
+</body>
+
+</html>

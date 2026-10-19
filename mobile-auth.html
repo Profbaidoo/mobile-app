@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f1d">
+    <title>Prof~Baidoo Mobile Authenticator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background: #0a0f1d;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1.25rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Glow */
+        .glow-orb {
+            position: fixed;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+            top: -50px;
+            right: -50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .header {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brand-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-text h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .brand-text p {
+            font-size: 0.7rem;
+            color: #818cf8;
+            font-weight: 600;
+        }
+
+        .secure-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .main-card {
+            position: relative;
+            z-index: 1;
+            background: rgba(19, 27, 46, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+            margin: 1.5rem 0;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .user-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            padding: 4px 12px 4px 4px;
+            margin-bottom: 1.25rem;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .user-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .user-role {
+            font-size: 0.7rem;
+            color: #818cf8;
+            font-weight: 600;
+        }
+
+        .token-heading {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .token-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #38bdf8;
+            text-shadow: 0 0 25px rgba(56, 189, 248, 0.5);
+            margin: 0.25rem 0;
+            user-select: all;
+        }
+
+        .timer-circle-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #f59e0b;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.85rem;
+            border-radius: 12px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            margin-top: 0.75rem;
+            text-decoration: none;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-approve:active {
+            transform: scale(0.98);
+        }
+
+        .btn-copy {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+        }
+
+        .btn-copy:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .info-card {
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 14px;
+            padding: 0.85rem;
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            line-height: 1.4;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            text-align: left;
+        }
+
+        .info-card i {
+            color: #818cf8;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #64748b;
+            padding-top: 1rem;
+        }
+
+        /* Toast */
+        .mobile-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-60px);
+            background: #10b981;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 9999;
+        }
+
+        .mobile-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow-orb"></div>
+
+    <div id="mobileToast" class="mobile-toast">
+        <i class="ri-checkbox-circle-fill"></i>
+        <span id="toastMsg">Code copied to clipboard!</span>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="brand-badge">
+            <div class="brand-icon">
+                <i class="ri-shield-check-fill"></i>
+            </div>
+            <div class="brand-text">
+                <h1>PROF~BAIDOO EDU</h1>
+                <p>Mobile 2FA Authenticator</p>
+            </div>
+        </div>
+        <div class="secure-chip">
+            <i class="ri-lock-line"></i>
+            <span>Encrypted</span>
+        </div>
+    </header>
+
+    <!-- Main Active Card -->
+    <main class="main-card">
+        <div class="user-pill">
+            <div class="user-avatar" id="dispAvatar">PB</div>
+            <span class="user-name" id="dispName">User Account</span>
+            <span class="user-role" id="dispRole">Staff</span>
+        </div>
+
+        <div class="token-heading">Your Mobile Authentication Code:</div>
+        <div class="token-code" id="dispToken">------</div>
+
+        <div class="timer-circle-wrap">
+            <i class="ri-time-line"></i>
+            <span id="dispTimer">Expires in 30s</span>
+        </div>
+
+        <div style="margin-top: 1.25rem;">
+            <button type="button" class="btn-action btn-approve" onclick="approveDirectly()">
+                <i class="ri-checkbox-circle-line"></i> One-Tap Push Approve PC Login
+            </button>
+            <button type="button" class="btn-action btn-copy" onclick="copyToken()">
+                <i class="ri-file-copy-line"></i> Copy 6-Digit Code
+            </button>
+        </div>
+    </main>
+
+    <!-- Info Card -->
+    <div class="info-card">
+        <i class="ri-information-line"></i>
+        <div>
+            This mobile session was opened via your smartphone QR Code scan. The 6-digit code above updates automatically every 30 seconds using RFC 6238 TOTP cryptography.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Prof~Baidoo Basic School Management System</p>
+        <p style="margin-top: 2px;">Session Security Gate &bull; Salt + Pepper + TOTP</p>
+    </footer>
+
+    <script>
+        // RFC 6238 TOTP Engine
+        const BASE32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+        function base32ToBytes(str) {
+            const clean = str.toUpperCase().replace(/[^A-Z2-7]/g, "");
+            let bits = "";
+            for (let i = 0; i < clean.length; i++) {
+                const val = BASE32_ALPHABET.indexOf(clean[i]);
+                if (val !== -1) bits += val.toString(2).padStart(5, "0");
+            }
+            const bytes = [];
+            for (let i = 0; i + 8 <= bits.length; i += 8) {
+                bytes.push(parseInt(bits.substr(i, 8), 2));
+            }
+            return new Uint8Array(bytes);
+        }
+
+        function hmacSha1(keyBytes, messageBytes) {
+            function sha1(bytes) {
+                let words = [];
+                for (let i = 0; i < bytes.length; i++) words[i >> 2] |= (bytes[i] & 255) << (24 - (i % 4) * 8);
+                const bitLen = bytes.length * 8;
+                words[bitLen >> 5] |= 0x80 << (24 - (bitLen % 32));
+                words[(((bitLen + 64) >> 9) << 4) + 15] = bitLen;
+                let [h0, h1, h2, h3, h4] = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
+                const rotl = (n, s) => (n << s) | (n >>> (32 - s));
+                for (let i = 0; i < words.length; i += 16) {
+                    const w = new Array(80);
+                    for (let t = 0; t < 16; t++) w[t] = words[i + t] | 0;
+                    for (let t = 16; t < 80; t++) w[t] = rotl(w[t - 3] ^ w[t - 8] ^ w[t - 14] ^ w[t - 16], 1);
+                    let [a, b, c, d, e] = [h0, h1, h2, h3, h4];
+                    for (let t = 0; t < 80; t++) {
+                        let f, k;
+                        if (t < 20) { f = (b & c) | (~b & d); k = 0x5a827999; }
+                        else if (t < 40) { f = b ^ c ^ d; k = 0x6ed9eba1; }
+                        else if (t < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8f1bbcdc; }
+                        else { f = b ^ c ^ d; k = 0xca62c1d6; }
+                        const temp = (rotl(a, 5) + f + e + k + w[t]) | 0;
+                        e = d; d = c; c = rotl(b, 30); b = a; a = temp;
+                    }
+                    h0 = (h0 + a) | 0; h1 = (h1 + b) | 0; h2 = (h2 + c) | 0;
+                    h3 = (h3 + d) | 0; h4 = (h4 + e) | 0;
+                }
+                const out = [];
+                [h0, h1, h2, h3, h4].forEach(word => {
+                    out.push((word >>> 24) & 255, (word >>> 16) & 255, (word >>> 8) & 255, word & 255);
+                });
+                return new Uint8Array(out);
+            }
+            let key = keyBytes;
+            if (key.length > 64) key = sha1(key);
+            const paddedKey = new Uint8Array(64);
+            paddedKey.set(key);
+            const oKeyPad = new Uint8Array(64);
+            const iKeyPad = new Uint8Array(64);
+            for (let i = 0; i < 64; i++) {
+                oKeyPad[i] = paddedKey[i] ^ 0x5c;
+                iKeyPad[i] = paddedKey[i] ^ 0x36;
+            }
+            const innerCombined = new Uint8Array(64 + messageBytes.length);
+            innerCombined.set(iKeyPad, 0);
+            innerCombined.set(messageBytes, 64);
+            const innerHash = sha1(innerCombined);
+            const outerCombined = new Uint8Array(64 + innerHash.length);
+            outerCombined.set(oKeyPad, 0);
+            outerCombined.set(innerHash, 64);
+            return sha1(outerCombined);
+        }
+
+        function generateTOTP(secretBase32) {
+            const keyBytes = base32ToBytes(secretBase32);
+            const epochSeconds = Math.floor(Date.now() / 1000);
+            const counter = Math.floor(epochSeconds / 30);
+            const counterBytes = new Uint8Array(8);
+            let temp = counter;
+            for (let i = 7; i >= 0; i--) {
+                counterBytes[i] = temp & 255;
+                temp = Math.floor(temp / 256);
+            }
+            const hmac = hmacSha1(keyBytes, counterBytes);
+            const offset = hmac[hmac.length - 1] & 0x0f;
+            const binary = ((hmac[offset] & 0x7f) << 24) |
+                ((hmac[offset + 1] & 0xff) << 16) |
+                ((hmac[offset + 2] & 0xff) << 8) |
+                (hmac[offset + 3] & 0xff);
+            const otp = binary % 1000000;
+            return otp.toString().padStart(6, "0");
+        }
+
+        // Parse Query Params
+        const params = new URLSearchParams(window.location.search);
+        const secret = params.get("secret") || "JBSWY3DPEHPK3PXP";
+        const username = params.get("user") || "admin";
+        const name = params.get("name") || "Prof. Nathaniel Baidoo";
+        const role = params.get("role") || "SuperAdmin";
+
+        document.getElementById("dispName").textContent = name;
+        document.getElementById("dispRole").textContent = role;
+        document.getElementById("dispAvatar").textContent = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+
+        function updateCode() {
+            const nowSec = Math.floor(Date.now() / 1000);
+            const secRem = 30 - (nowSec % 30);
+            const code = generateTOTP(secret);
+            document.getElementById("dispToken").textContent = code;
+            document.getElementById("dispTimer").textContent = "Expires in " + secRem + "s";
+        }
+
+        updateCode();
+        setInterval(updateCode, 1000);
+
+        function showToast(msg) {
+            const toast = document.getElementById("mobileToast");
+            document.getElementById("toastMsg").textContent = msg;
+            toast.classList.add("show");
+            setTimeout(() => toast.classList.remove("show"), 2500);
+        }
+
+        function copyToken() {
+            const code = document.getElementById("dispToken").textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                showToast("Code " + code + " copied!");
+            }).catch(() => {
+                showToast("Code: " + code);
+            });
+        }
+
+        function approveDirectly() {
+            const code = document.getElementById("dispToken").textContent;
+            try {
+                // Broadcast approval event to localStorage for the desktop window
+                localStorage.setItem("PROF_BAIDOO_MOBILE_PUSH_AUTH", JSON.stringify({
+                    username: username,
+                    code: code,
+                    timestamp: Date.now()
+                }));
+            } catch (e) {}
+            showToast("Approval sent to PC session!");
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/SMS", "destination": "/index.html" },
+    { "source": "/SMS.html", "destination": "/index.html" },
+    { "source": "/mobile-auth", "destination": "/mobile-auth.html" },
+    { "source": "/mobile-auth.html", "destination": "/mobile-auth.html" }
+  ]
+}
